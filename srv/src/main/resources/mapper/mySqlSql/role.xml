@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="role">
+    <resultMap type="root.report.auth.RoleModel" id="roleModel">
+        <result column="ROLE_ID" property="roleId" javaType="int" jdbcType="VARCHAR"></result>
+        <result column="ROLE_NAME" property="roleName" javaType="string" jdbcType="VARCHAR"></result>
+        <result column="ENABLED" property="enabled" javaType="string" jdbcType="NUMERIC"></result>
+        <result column="ENABLEDTEXT" property="enabledText" javaType="string" jdbcType="VARCHAR"></result>
+        <result column="CREATED_DATE" property="createdDate" javaType="string" jdbcType="VARCHAR"></result>
+        <result column="CREATED_BY" property="createdBy" javaType="string" jdbcType="VARCHAR"></result>
+        <result column="LAST_UPDATED_DATE" property="lastUpdatedDate" javaType="string" jdbcType="VARCHAR"></result>
+        <result column="LAST_UPDATED_BY" property="lastUpdatedBy" javaType="string" jdbcType="VARCHAR"></result>
+
+    </resultMap>
+    <select id="getRoleList" resultType="Map" parameterType="Map">
+        SELECT r.role_id as roleId,r.role_name as roleName from fnd_role r
+    </select>
+
+    <insert id="addUserRole" parameterType="Map" >
+        insert into fnd_user_role(user_id,role_id)  values (#{user_id},#{role_id})
+    </insert>
+
+    <select id="deleteUserRole" parameterType="Map">
+        delete t from fnd_user_role t where 1=1
+        <if test="user_id != null and user_id!=''">  and t.user_id='${user_id}' </if>
+        <if test="role_id != null and role_id!=''">  and t.role_id='${role_id}' </if>
+    </select>
+
+    <select id="getRolesList" resultMap="roleModel" parameterType="map">
+        select t.role_id,t.role_name,t.created_date,t.created_by,t.last_updated_date,t.enabled,
+        case when t.enabled='1' then '启用' else '禁用' end enabledText,t.last_updated_by
+        from fnd_role t
+        where 1=1 and t.role_id!='1'
+        <if test="roleName != null and roleName!=''">  and t.role_name like '%${roleName}%' </if>
+        <if test="roleId != null and roleId!=''">  and t.role_id= '${roleId}' </if>
+        limit #{startIndex},#{perPage}
+    </select>
+
+    <select id="getUserListByRoleId" resultType="Map" parameterType="Map">
+        select u.user_id from fnd_user_role u  where 1=1
+        <if test="roleId != null and roleId!=''">  and u.role_id= '${roleId}' </if>
+
+    </select>
+    <select id="getRoleListByUserId" resultType="String" parameterType="Map">
+        select u.role_id from fnd_user_role u  where 1=1
+        <if test="userId != null and userId!=''">  and u.user_id= '${userId}' </if>
+
+    </select>
+
+    <select id="getRoleInfoById" resultMap="roleModel" parameterType="int">
+        select t.role_id,t.role_name,t.enabled,DATE_FORMAT(t.created_date,'%Y-%m-%d') created_date,DATE_FORMAT(t.last_updated_date,'%Y-%m-%d') last_updated_date,t.created_by,
+        t.last_updated_by
+        from fnd_role t
+        where t.role_id=#{id}
+    </select>
+    <select id="countRole" resultType="int" parameterType="map">
+        select count(1) from fnd_role where  1=1
+        <if test="roleName != null and roleName!=''">  and role_name like '%${roleName}%' </if>
+    </select>
+    <insert id="addRole" parameterType="root.report.auth.RoleModel">
+        insert into fnd_role(role_id,role_name,enabled,created_date,created_by,last_updated_date,last_updated_by)
+        values (#{roleId},#{roleName},#{enabled},date_format(now(),'%Y/%m/%d %h:%i:%s'),#{createdBy},#{lastUpdatedDate},#{lastUpdatedBy})
+        <selectKey resultType="int" keyProperty="role_id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <select id="deleteRole" parameterType="int">
+        delete t from fnd_role t where t.role_id=#{id}
+    </select>
+    <update id="updateRole" parameterType="root.report.auth.RoleModel">
+        update fnd_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleName!=null">role_name=#{roleName},</if>
+            <if test="enabled!=null">enabled=#{enabled}</if>
+            <if test="lastUpdatedDate!=null">last_updated_date= #{lastUpdatedDate,jdbcType=TIMESTAMP} </if>
+            <if test="lastUpdatedBy!=null">last_updated_by=#{lastUpdatedBy}</if>
+        </trim>
+        where role_id=#{roleId}
+    </update>
+    <insert id="addRoleUser" parameterType="root.report.auth.RoleModel">
+        insert into fnd_user_role(role_id,user_id) values (#{role_id},#{user_id})
+    </insert>
+
+
+</mapper>

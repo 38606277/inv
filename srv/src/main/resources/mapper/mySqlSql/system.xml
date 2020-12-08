@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system">
+	<insert id="insertSysApiLog" parameterType="root.report.sys.SysApiLog">
+		insert into sys_api_log(api_code,client,begin_time,end_time,in_param)
+        values (#{api_code},#{client},str_to_date(#{begin_time},'%Y%m%d%H%i%s'),str_to_date(#{begin_time},'%Y%m%d%H%i%s'),
+                #{in_param})
+	</insert>
+</mapper>

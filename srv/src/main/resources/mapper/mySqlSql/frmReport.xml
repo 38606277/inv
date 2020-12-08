@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="frmReport">
+	<!-- frm_report -->
+	<insert id="insert" parameterType="map">
+		insert into frm_report (report_id, template_id, report_name,report_state, create_by, file_path)
+		values (#{reportId,jdbcType=INTEGER}, #{templateId,jdbcType=INTEGER}, #{reportName,jdbcType=VARCHAR},
+				#{reportState,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="listReportByCreater" resultType="map" parameterType="string">
+        select * from frm_report r where r.create_by=#{createBy}
+    </select>
+    
+    <select id="listReportByReportId" resultType="map" parameterType="int">
+        select * from frm_report r where r.report_id=#{reportId}
+    </select>
+    
+    <delete id="rmReport" parameterType="int">
+        delete from frm_report where report_id=#{reportId}
+    </delete>
+    
+    <!-- frm_report_task -->
+    <insert id="insertReoportTask" parameterType="map">
+		insert into frm_report_task (report_id, user_id, create_by, create_date, receive_date, commit_date, state)
+    		values (#{reportId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{createBy,jdbcType=INTEGER}, 
+    				#{createDate,jdbcType=TIMESTAMP}, #{receiveDate,jdbcType=TIMESTAMP}, #{commitDate,jdbcType=TIMESTAMP}, #{state,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="listReportTask" resultType="map" parameterType="map">
+        select * from frm_report_task t where 1=1
+        <if test="createBy != null"> and t.createBy = #{createBy}</if>
+        <if test="userId != null"> and t.user_id = #{userId}</if>
+        <if test="reportId != null"> and t.report_id = #{reportId}</if>
+    </select>
+    
+    <delete id="rmReportTask" parameterType="int">
+        delete from frm_report_task where report_id=#{reportId}
+    </delete>
+    
+	<!-- frm_report_cell -->
+	<insert id="insertReoportTaskCell" parameterType="map">
+		insert into frm_report_task_cell (cell_id, report_id, user_id, sheet_name, cell_address, cell_name, cell_value, cell_type)
+    		values (#{cellId,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      				#{sheetName,jdbcType=VARCHAR}, #{cellAddress,jdbcType=VARCHAR}, #{cellName,jdbcType=VARCHAR}, 
+      				#{cellValue,jdbcType=VARCHAR}, #{cellType,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="listReportTaskCell" resultType="map" parameterType="map">
+        select * from frm_report_task_cell t where 1=1
+        <if test="userId != null"> and t.user_id = #{userId}</if>
+        <if test="reportId != null"> and t.report_id = #{reportId}</if>
+        order by t.user_id,t.cell_address
+    </select>
+    
+    <delete id="rmReportTaskCell" parameterType="int">
+        delete from frm_report_task_cell where report_id=#{reportId}
+    </delete>
+    
+    <update id="updateReportTaskCell" parameterType="map">
+    	update frm_report_task_cell 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="cellValue!=null">cell_value=#{cellValue},</if>
+		</trim>
+		where cell_id=#{cellId}
+    </update>
+    <!-- union query -->
+    <select id="listMyTask" resultType="map" parameterType="map">
+        select r.create_by, r.file_path, r.report_name, r.report_state, r.template_id, t.*
+			   from frm_report r, frm_report_task t where r.report_id=t.report_id 
+        <if test="userId != null"> and t.user_id = #{userId}</if>
+        <if test="status != null"> and t.state= #{status}</if>
+    </select>
+    <update id="updateReportTask" parameterType="map">
+    update frm_report_task set state = #{state},commit_date = now()
+     where report_id=#{report_id}
+       and user_id=#{user_id}
+    </update>
+</mapper>

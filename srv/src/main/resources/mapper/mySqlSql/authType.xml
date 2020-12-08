@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authType">
+    <select id="getAllAuthTypeList" resultType="Map" parameterType="Map">
+       select authtype_name as value,authtype_desc as name from fnd_authtype where authtype_class = 'data'
+    </select>
+    <select id="getAuthTypeByName" resultType="Map" parameterType="String">
+       select * from fnd_authtype where authtype_name = #{aythTypeName}
+    </select>
+    <select id="getAuthSqlByName" resultType="String" parameterType="String">
+       select auth_sql as authSql from fnd_authtype where authtype_name = #{aythTypeName}
+    </select>
+    <insert id="addAuthType" parameterType="Map" useGeneratedKeys="true" keyProperty="authtype_id">
+        insert into fnd_authtype(authtype_name, authtype_desc, authtype_class,use_object,auth_db,auth_name,auth_sql) values(#{authTypeName}, #{authTypeDesc}, #{authTypeClass}, #{useObject}, #{authDb}, #{authName}, #{authSql})
+    </insert>
+    <update id="updateAuthType" parameterType="Map">
+        update fnd_authtype 
+          <trim prefix="set" suffixOverrides=",">
+              <if test="authTypeName!=null">authtype_name=#{authTypeName},</if>
+              <if test="authTypeDesc!=null">authtype_desc=#{authTypeDesc},</if>
+              <if test="authTypeClass!=null">authtype_class=#{authTypeClass},</if>
+              <if test="useObject!=null">use_object=#{useObject},</if>
+              <if test="authDb!=null">auth_db=#{authDb},</if>
+              <if test="authName!=null">auth_name=#{authName},</if>
+              <if test="authSql!=null">auth_sql=#{authSql},</if>
+          </trim>
+         where authtype_id = #{authTypeId}
+    </update>
+    <delete id="deleteAuthType" parameterType="Map">  
+        delete from fnd_authtype 
+		where authtype_id = #{authTypeId}
+    </delete>  
+    <delete id="deleteAuthTypeByName" parameterType="String">  
+        delete from fnd_authtype 
+        where authtype_name = #{authTypeName}
+    </delete>  
+</mapper>

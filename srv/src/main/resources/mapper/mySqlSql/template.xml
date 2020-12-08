@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="template">
+	<insert id="addTemplate" parameterType="Map" useGeneratedKeys="true">
+	  	<![CDATA[
+	  	insert into frm_template(template_name, createby,create_date,template_path) values(#{name}, #{createby}, #{date},#{path})
+	  	]]>
+	</insert>
+	<select id="getTemplateByConditions" parameterType="Map" resultType="Map">
+        select t.template_id from frm_template t where t.template_name = #{name} and t.template_path = #{path}
+    </select>
+    <select id="getTemplateList" resultType="Map">
+        select t.template_name as name,t.template_path as path from frm_template t
+    </select>
+    <update id="updateTemplate"  parameterType="Map">
+		 update frm_template 
+		  <trim prefix="set" suffixOverrides=",">
+			  <if test="updateBy!=null">last_update=#{updateBy},</if>
+			  <if test="date!=null">last_update_date=#{date},</if>
+			  <if test="path!=null">template_path=#{path},</if>
+		  </trim>
+		  where template_id=#{id}
+	</update>
+</mapper>

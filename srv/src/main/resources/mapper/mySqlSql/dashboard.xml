@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dashboard">
+
+    <!-- 增加 da_cube 中的记录，让此SQL能返回自增长主键 -->
+    <insert id="createDashBoard" parameterType="Map"  useGeneratedKeys="true" keyProperty="id">
+        insert into dashboard(class_id,dashboard_name,dashboard_desc,tempate,icon,param)
+        values ('${class_id}',
+        <if test="dashboard_name == null">NULL</if>
+        <if test="dashboard_name != null">'${dashboard_name}'</if>,
+        <if test="dashboard_desc == null">NULL</if>
+        <if test="dashboard_desc != null">'${dashboard_desc}'</if>,
+        <if test="tempate == null">NULL</if>
+        <if test="tempate != null">#{tempate,jdbcType=INTEGER}</if>,
+        <if test="icon == null">NULL</if>
+        <if test="icon != null">'${icon}'</if>,
+        <if test="param == null">NULL</if>
+        <if test="param != null">'${param}'</if>
+        )
+    </insert>
+
+    <!-- 修改 dashboard 记录 -->
+    <update id="updateDashBoard"  parameterType="Map">
+        update dashboard set
+        class_id='${class_id}',
+        dashboard_name=
+        <if  test="dashboard_name == null">NULL</if>
+        <if  test="dashboard_name != null">'${dashboard_name}'</if>,
+        dashboard_desc=
+        <if test="dashboard_desc == null">NULL</if>
+        <if test="dashboard_desc != null">'${dashboard_desc}'</if>,
+        tempate=
+        <if test="tempate == null">NULL</if>
+        <if test="tempate != null">#{tempate,jdbcType=INTEGER}</if>,
+        icon=
+        <if test="icon == null">NULL</if>
+        <if test="icon != null">'${icon}'</if>,
+        param=
+        <if test="param == null">NULL</if>
+        <if test="param != null">'${param}'</if>
+        where dashboard_id=#{dashboard_id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getDashBoardById" parameterType="int" resultType="Map">
+        select dashboard_id,class_id,dashboard_name,dashboard_desc,tempate,param,icon from dashboard where dashboard_id=#{dashboard_id,jdbcType=INTEGER}
+    </select>
+
+    <select id="getAllDashboard" parameterType="Map" resultType="Map">
+        select dashboard_id,class_id,dashboard_name,dashboard_desc,tempate,param,icon from dashboard where 1=1
+        <if test="dashboard_name != null and dashboard_name!=''">  and dashboard_name like '%${dashboard_name}%' </if>
+    </select>
+
+    <select id="countAllDashboard" resultType="int" parameterType="Map">
+         select count(1) from dashboard where 1=1
+        <if test="dashboard_name != null and dashboard_name!=''">  and dashboard_name like '%${dashboard_name}%' </if>
+    </select>
+
+    <delete id="deleteDashBoardById" parameterType="int">
+        delete from dashboard where dashboard_id=#{dashboard_id,jdbcType=INTEGER}
+    </delete>
+    <select id="getAllDashboardforAuth" parameterType="Map" resultType="Map">
+        select dashboard_id as `key`,dashboard_name as title from dashboard
+    </select>
+</mapper>

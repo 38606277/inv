@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="task">
+	<insert id="addTaskTable" parameterType="Map" useGeneratedKeys="true" keyProperty="task_id">
+	  	insert into frm_task(task_name, template,begin_date,end_date,isExcel,isWeb,isPhone,create_by,priority,state) values(#{taskName}, #{template}, #{beginDate}, #{endDate}, #{isExcel}, #{isWeb}, #{isPhone}, #{createBy}, #{priority},'开启')
+	</insert>
+	<insert id="addTaskLines" parameterType="Map" useGeneratedKeys="true" >
+	  	insert into frm_task_lines(task_id,user_id, state) values(#{taskId},#{userId}, #{state})
+	</insert>
+	<select id="getCurrentTaskTemplate" parameterType="Map" resultType="Map">
+        select DISTINCT t.template FROM frm_task t where <![CDATA[ #{now} between t.begin_date and t.end_date and t.create_by = #{userCode} order by t.priority asc ]]>
+    </select>
+	<select id="getHistoricalTaskTemplate" parameterType="Map" resultType="Map">
+        select DISTINCT t.template FROM frm_task t where <![CDATA[ t.end_date < #{now} and t.create_by = #{userCode} order by t.priority asc]]>
+    </select>
+	<select id="getTaskNameByCurrentTask" parameterType="Map" resultType="Map">
+        select t.task_name as name,t.task_id as id from frm_task t where t.template = #{template} <![CDATA[ and #{now} between t.begin_date and t.end_date and t.create_by = #{userCode} order by t.priority asc ]]>
+    </select>
+	<select id="getTaskNameByHistoricalTask" parameterType="Map" resultType="Map">
+        select t.task_name as name,t.task_id as id from frm_task t where t.template = #{template} <![CDATA[ and t.end_date < #{now} and t.create_by = #{userCode} order by t.priority asc ]]>
+    </select>
+	<select id="getTaskIdByUserId" parameterType="java.lang.String" resultType="Map">
+        select l.task_id from frm_task_lines l where l.user_id = #{userId}
+    </select>
+    <select id="getTaskByTaskName" parameterType="Map" resultType="Map">
+        select * from frm_task t where t.task_name = #{taskName}
+    </select>
+    <select id="getTaskList" parameterType="Map" resultType="Map">
+        select l.task_line_id,t.task_name,t.create_by,t.priority,p.template_path,p.template_name,l.form_path from frm_task_lines l LEFT JOIN frm_task t on l.task_id=t.task_id LEFT JOIN frm_template p on t.template=p.template_name where  l.user_id = #{userId} and l.state = #{state} 
+    </select>
+    <select id="getTaskListByTemplate" parameterType="java.lang.String" resultType="Map">
+        select t.task_name from frm_task t where t.template = #{template} and t.state = '开启'
+    </select>
+    <select id="getCurrentTaskList" parameterType="Map" resultType="Map">
+        select t.task_id from frm_task_lines t where t.state = '待办'
+    </select>
+    <select id="getCurrentTemplateList" parameterType="Map" resultType="Map">
+        SELECT DISTINCT t.template as name FROM frm_task t LEFT JOIN frm_template p on t.template = p.template_name LEFT JOIN frm_task_lines l on t.task_id = l.task_id where l.state = '待办'
+    </select>
+    <select id="getStateByTaskLinesId" parameterType="java.lang.String" resultType="Map">
+        select l.state from frm_task_lines l where l.task_id = (select t.task_id from frm_task_lines t where t.task_line_id = #{id} )
+    </select>
+	<select id="getTaskByTaskLinesId" parameterType="java.lang.String" resultType="Map">
+        select t.template,t.task_name from frm_task t,frm_task_lines l where t.task_id = l.task_id and l.task_line_id = #{id}
+    </select>
+	<select id="getReceiveDateByTaskLinesId" parameterType="java.lang.String" resultType="java.lang.String">
+        select l.receive_Date from frm_task_lines l where l.task_line_id = #{id}
+    </select>
+    <select id="getTaskById" parameterType="java.lang.String" resultType="Map">
+        select t.task_id as fillTaskId,t.task_name as fillTaskName,t.template as fillTemplate,t.begin_date as fillTimeFor,t.end_date as fillTimeTo,t.isExcel,t.isPhone,isWeb,t.create_by,t.priority from frm_task t where t.task_id = #{taskId} 
+    </select>
+    <select id="getTaskByTaskId" parameterType="java.lang.String" resultType="Map">
+        select t.template,t.task_name from frm_task t where t.task_id = #{taskId} 
+    </select>
+    <select id="getTaskLineByTaskId" parameterType="java.lang.String" resultType="Map">
+        select l.task_line_id as taskLineId,l.user_id as userId,l.state as fillState from frm_task_lines l where l.task_id = #{taskId} 
+    </select>
+    <select id="getTaskLineByTask" parameterType="Map" resultType="Map">
+        SELECT t.task_id,t.begin_date as beginDate,t.end_date as endDate,t.create_by as createBy FROM frm_task t WHERE t.task_name = #{taskName} and t.template = #{tempName} or t.template = #{template} ORDER BY t.template DESC 
+    </select>
+    <select id="getFillTaskLineByTaskId" parameterType="java.lang.String" resultType="Map">
+        SELECT u.USER_NAME,l.state,l.receive_Date as receiveDate,l.commit_Date as commitDate FROM frm_task_lines l,fnd_user u where l.task_id = #{taskId} and l.user_id = u.USER_ID 
+    </select>
+	<update id="updateTaskLinesByCondition"  parameterType="Map">
+		 update frm_task_lines	 
+		  <trim prefix="set" suffixOverrides=",">
+			  <if test="receiveDate!=null">receive_Date=#{receiveDate},</if>
+			  <if test="state!=null">state=#{state},</if>
+			  <if test="commitDate!=null">commit_Date=#{commitDate},</if>
+			  <if test="formPath!=null">form_Path=#{formPath},</if>
+		  </trim>
+		  where task_line_id=#{id}
+	</update>
+	<update id="updateTaskByCondition"  parameterType="Map">
+		 update frm_task	 
+		  <trim prefix="set" suffixOverrides=",">
+			  <if test="state!=null">state=#{state},</if>
+		  </trim>
+		  where task_id= (select t.task_id from frm_task_lines t where t.task_line_id = #{id} )
+	</update>
+	<update id="updateTask"  parameterType="Map">
+		 update frm_task	 
+		  <trim prefix="set" suffixOverrides=",">
+			  <if test="taskName!=null">task_name=#{taskName},</if>
+			  <if test="template!=null">template=#{template},</if>
+			  <if test="beginDate!=null">begin_date=#{beginDate},</if>
+			  <if test="endDate!=null">end_date=#{endDate},</if>
+			  <if test="isExcel!=null">isExcel=#{isExcel},</if>
+			  <if test="isWeb!=null">isWeb=#{isWeb},</if>
+			  <if test="isPhone!=null">isPhone=#{isPhone},</if>
+			  <if test="createBy!=null">create_by=#{createBy},</if>
+			  <if test="priority!=null">priority=#{priority},</if>
+		  </trim>
+		  where task_id= #{taskId}
+	</update>
+	<update id="updateTaskLines"  parameterType="Map">
+		 update frm_task_lines	 
+		  <trim prefix="set" suffixOverrides=",">
+			  <if test="userId!=null">user_id=#{userId},</if>
+			  <if test="state!=null">state=#{state},</if>
+		  </trim>
+		  where task_line_id=#{taskLineId}
+	</update>
+</mapper>

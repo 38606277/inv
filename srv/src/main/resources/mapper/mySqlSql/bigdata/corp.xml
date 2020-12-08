@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="corp">
+
+
+
+    <select id="getAllOrg" parameterType="Map" resultType="Map">
+        SELECT
+        so.org_code,
+        so.org_short_name,
+        so.pid,
+        so.`status`,
+        so.is_sale_org,
+        so.org_name,
+        so.type,
+        so.parent_org_name,
+        so.parent_org_code,
+        so.create_by,
+        so.create_time,
+        so.lastmodified_by,
+        so.lastmodified_time,
+        so.org_order,
+        so.org_level,
+        so.org_view_code,
+        so.manager_level,
+        so.org_reg_code,
+        so.legal_person,
+        so.found_date,
+        so.org_province,
+        so.org_area,
+        so.org_address,
+        so.org_sys_type,
+        so.is_rpt_summary,
+        so.is_rpt_self,
+        so.is_rpt_sub,
+        so.is_cancel,
+        so.change_status,
+        so.v_id,
+        so.v_start_date,
+        so.v_end_date,
+        so.v_no,
+        so.v_name,
+        so.memo,
+        so.dir_staff_num,
+        so.org_manager,
+        so.country,
+        so.province,
+        so.city,
+        so.abroad_city,
+        so.credit_code,
+        so.is_abroad,
+        so.corp_attribute,
+        so.org_fax,
+        so.org_post_code
+        FROM
+        sys_org_ AS so
+    </select>
+
+
+
+
+
+
+</mapper>

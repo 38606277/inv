@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 北控水务数据填报功能 -->
+<mapper namespace="dataCollect">
+    <!--添加模板信息-->
+	<insert id="addTemplate" parameterType="map" useGeneratedKeys="true">
+	  	insert into frm_template(template_name, createby,create_date,template_path,template_type) values
+	  		(#{template_name,jdbcType=VARCHAR}, #{createby,jdbcType=VARCHAR}, #{create_date,jdbcType=VARCHAR},
+	  		#{template_path,jdbcType=VARCHAR},'0')
+	</insert>
+    <!--查询模板列表-->
+	<select id="getTemplateList" parameterType="string" resultType="map">
+        select t.*, ft.table_id, ft.table_name from frm_template t
+            LEFT JOIN frm_table ft on t.template_id = ft.template_id  where 1=1
+            and t.template_type = '0' and t.createby = #{createBy}
+    </select>
+    <!--根据模板id查询模板-->
+    <select id="getTemplate" parameterType="int" resultType="map">
+        select * from frm_template where template_id=#{templateId}
+    </select>
+    <select id="getTemplateByName" parameterType="string" resultType="map">
+        select * from frm_template where template_name=#{tamplateName}
+    </select>
+    <!--删除模板-->
+    <delete id="rmTemplate" parameterType="int">
+        delete from frm_template where template_id=#{template_id}
+    </delete>
+    <!--根据表ID查询模板任务-->
+    <select id="getTableTaskList" parameterType="int" resultType="Map">
+        select * from frm_form_task t where t.table_id=#{table_id}
+    </select>
+    <!--根据建表sql动态建表-->
+    <update id="createNewTable" parameterType="string">
+        ${_parameter}
+    </update>
+    <!-- drop掉新添加的表 -->
+    <update id="dropNewTable" parameterType="string">
+    	drop table if EXISTS ${_parameter}
+    </update>
+    <!--添加表的描述信息-->
+    <insert id="addTableRecord" parameterType="Map" useGeneratedKeys="true" keyProperty="_id">
+        insert into frm_table (table_name, table_desc, template_id, create_by, create_date)
+            values (#{table_name,jdbcType=VARCHAR},#{table_desc,jdbcType=VARCHAR},#{template_id,jdbcType=INTEGER},
+                    #{create_by,jdbcType=VARCHAR},#{create_date,jdbcType=TIMESTAMP})
+    </insert>
+    <!--添加字段信息-->
+    <insert id="addTableFields" parameterType="List">
+        insert into frm_table_field (table_id,field_id,field_name,field_desc,data_type,excel_col,data_dict,data_auth,data_length) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.table_id, jdbcType=INTEGER},#{item.field_id, jdbcType=VARCHAR},#{item.field_name, jdbcType=VARCHAR},
+            #{item.field_desc, jdbcType=VARCHAR},#{item.data_type, jdbcType=VARCHAR},#{item.field_name, jdbcType=VARCHAR},
+            #{item.data_dict, jdbcType=VARCHAR},#{item.data_auth, jdbcType=VARCHAR},#{item.data_length, jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <!--删除表定义信息-->
+    <delete id="deleteFromFrmTable" parameterType="int">
+        delete from frm_table where table_id=#{tableId}
+    </delete>
+    <!--删除字段定义信息-->
+    <delete id="deleteFromFrmTableField" parameterType="int">
+        delete from frm_table_field where table_id=#{tableId}
+    </delete>
+
+    <!--查询表定义-->
+    <select id="getFrmTableByTaskId" parameterType="Map" resultType="Map">
+       select DISTINCT table_id from frm_form_task t where t.task_id=#{taskId}
+    </select>
+    <!--查询表定义-->
+    <select id="getFrmTable" parameterType="Map" resultType="Map">
+        select * from frm_table t where 1=1
+        <if test="createBy != null"> and t.create_by=#{createBy}</if>
+        <if test="templateId != null"> and t.template_id=#{templateId}</if>
+        <if test="tableId != null"> and t.table_id=#{tableId}</if>
+        <if test="tableName != null"> and t.table_name=#{tableName}</if>
+        order by t.create_date desc
+    </select>
+    <!--根据表ID查询表对应的字段描述-->
+    <select id="getTableFieldDesc" parameterType="int" resultType="Map">
+        select * from frm_table_field t where t.table_id=#{tableId}
+    </select>
+
+    <!--查询任务-->
+    <select id="getTaskInfo" parameterType="int" resultType="Map">
+        select * from frm_form_task t where t.task_id=#{task_d}
+    </select>
+    <!--查询任务用户-->
+    <select id="getTaskUserInfo" parameterType="int" resultType="Map">
+        select * from frm_form_task_user tu where 1=1 and tu.task_id=#{task_id}
+    </select>
+    <!--添加任务信息-->
+    <insert id="insertTaskInfo" parameterType="Map" useGeneratedKeys="true" keyProperty="task_id">
+        insert into frm_form_task (task_id, table_id, task_name, start_date, end_date, create_by, create_date,deploy_date,task_state) values(
+          #{task_id, jdbcType=INTEGER},#{table_id, jdbcType=INTEGER},#{task_name, jdbcType=VARCHAR},#{start_date, jdbcType=TIMESTAMP},#{end_date, jdbcType=TIMESTAMP},
+          #{create_by, jdbcType=VARCHAR},#{create_date, jdbcType=TIMESTAMP},#{deploy_date, jdbcType=TIMESTAMP},#{task_state, jdbcType=VARCHAR}
+        )
+    </insert>
+    <!--添加任务用户信息-->
+    <insert id="inserTaskUserInfo" parameterType="List">
+        insert into frm_form_task_user (task_id, user_id, create_date, receive_date, commit_date) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.task_id, jdbcType=INTEGER},#{item.user_id, jdbcType=VARCHAR},#{item.create_date, jdbcType=TIMESTAMP},
+             #{item.receive_date, jdbcType=TIMESTAMP},#{item.commit_date, jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+    <!--删除任务信息-->
+    <delete id="deleteTaskInfo" parameterType="int">
+        delete from frm_form_task where task_id=#{task_id}
+    </delete>
+    <!--删除任务用户信息-->
+    <delete id="deleteTaskUserInfo" parameterType="int">
+        delete from frm_form_task_user where task_id=#{task_id}
+    </delete>
+
+    <!--加载报表数据-->
+    <select id="reportData" parameterType="Map" resultType="Map">
+        select * from ${tableName} where 1=1
+        <if test="createBy != null"> and create_by=#{createBy}</if>
+        <if test="taskId != null">and task_id=#{taskId}</if>
+    </select>
+    <!--根据任务id查询数据表的字段名称和字段类型-->
+    <select id="getColumnNameAndType" parameterType="int" resultType="Map">
+        select f.field_name, f.data_type from frm_table_field f where
+            f.table_id=(select t.table_id from frm_form_task t where t.task_id=#{taskId})
+    </select>
+    <!--保存报表数据-->
+    <insert id="saveReportData" parameterType="Map">
+        insert into ${tableName}
+        (<foreach collection="columnNames" item="col" separator=",">${col}</foreach>)
+        VALUES
+        <foreach collection="data" item="item" separator=",">
+            (<foreach collection="item" item="value" separator=",">#{value}</foreach>)
+        </foreach>
+    </insert>
+    <!--删除 任务 用户报表数据-->
+    <delete id="deleteReportData" parameterType="Map">
+        delete from ${tableName} where 1=1
+        <if test="createBy != null"> and create_by = #{createBy}</if>
+        <if test="taskId != null"> and task_id = #{taskId}</if>
+    </delete>
+
+    <!--根据用户id查询代办任务-->
+    <select id="getMytaskByUserId" parameterType="map" resultType="Map">
+       select u.user_id as userid,t.task_id as taskid,t.task_name as taskname,date_format(t.start_date,'%Y-%m-%d') as startdate,date_format(t.end_date,'%Y-%m-%d') as enddate,t.task_state as taskstate
+       from frm_form_task_user u,frm_form_task t where u.task_id=t.task_id and u.commit_date is null and t.task_state='1'
+        <if test="keyword != null  and keyword!=''">   and t.task_name like '%${keyword}%' </if>  and u.user_id=#{userId}
+        limit #{startIndex},#{perPage}
+    </select>
+    <select id="countMytaskByUserId" parameterType="map" resultType="String">
+        select count(t.task_id) as total from frm_form_task_user u,frm_form_task t where u.task_id=t.task_id and u.commit_date is null and t.task_state='1'
+        <if test="keyword != null and keyword!=''">   and t.task_name like '%${keyword}%' </if>  and u.user_id=#{userId}
+    </select>
+
+    <!--根据用户id查询已办任务-->
+    <select id="getMytaskListByUserId" parameterType="map" resultType="Map">
+       select u.user_id as userid,t.task_id as taskid,t.task_name as taskname,date_format(t.start_date,'%Y-%m-%d') as startdate,date_format(t.end_date,'%Y-%m-%d') as enddate,t.task_state as taskstate
+       from frm_form_task_user u,frm_form_task t where u.task_id=t.task_id and u.commit_date is not null and t.task_state='1'
+        <if test="keyword != null and keyword!=''">   and t.task_name like '%${keyword}%' </if>
+        and u.user_id=#{userId} limit #{startIndex},#{perPage}
+    </select>
+
+    <select id="countMytaskListByUserId" parameterType="map" resultType="String">
+        select count(t.task_id) as total
+        from frm_form_task_user u,frm_form_task t where u.task_id=t.task_id and u.commit_date is not null and t.task_state='1'
+        <if test="keyword != null and keyword!=''">   and t.task_name like '%${keyword}%' </if>
+        and u.user_id=#{userId}
+    </select>
+
+
+    <update id="updateReportTaskUserBytaskIdUserId" parameterType="map" >
+        update frm_form_task_user tu set tu.receive_date=sysdate() where tu.user_id=#{userId} and tu.task_id=#{taskId}
+    </update>
+
+    <update id="commitReportTaskUserBytaskIdUserId" parameterType="map" >
+        update frm_form_task_user tu set tu.commit_date=sysdate() where tu.user_id=#{userId} and tu.task_id=#{taskId}
+    </update>
+
+    <!--根据用户id、任务id 查询任务用户-->
+    <select id="getTaskUserInfoByUserId" parameterType="map" resultType="Map">
+        select * from frm_form_task_user tu where 1=1 and tu.task_id=#{taskId} and tu.user_id=#{userId}
+    </select>
+    <!--保存填报值-->
+    <select id="insetTaskInfo" parameterType="String" resultType="Map">
+      ${value}
+    </select>
+    <!-- 根据userID获取已经填报的数据-->
+    <select id="getTableData" parameterType="String" resultType="Map">
+      ${value}
+    </select>
+
+</mapper>

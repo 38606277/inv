@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="cache">
+    <cache/>
+    <select id="getDepartmentListByConmpanyCodes" resultType="Map" parameterType="Map">
+        select e.ORG_EXT_ID as value,e.ORG_NAME as name from arch_org_ext e,tbm_companies c 
+		where e.COMPANY_ID=c.COMPANY_ID
+		and c.COMPANY_CODE in (${companyCodes})
+		order by c.COMPANY_ID
+    </select>
+    <select id="getAllCompanies" resultType="Map">
+    SELECT tc.COMPANY_CODE ,tc.COMPANY_NAME 
+      FROM tbm_companies tc
+     WHERE COMPANY_TYPE_LOOKUP_CODE IN ('C','O')  
+       AND COALESCE(CUST_TEXT01,'') != 'Y' 
+       AND ENABLED_FLAG = 'Y' 
+     ORDER BY COMPANY_CODE
+    </select>
+</mapper>

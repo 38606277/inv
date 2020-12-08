@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="sysUser">
+	
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectUser" resultType="map">
+		 select * from sys_user
+	</select>
+		<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectAllCount" resultType="String">
+		 select count(*) from sys_user u where 1=1 
+			<if test="org_code!=null and org_code!='' "> and u.org_code=${org_code} </if> 
+			<if test="code!=null and code!='' "> and u.code like '%${code}%' </if>
+			<if test="name!=null and name!='' "> and u.name like '%${name}%' </if>
+			<if test="state!=null and state!='' "> and state=${state} </if>
+			 order by code 
+	</select>
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectOneUser" resultType="map">
+		select * from sys_user where uuid=#{uuid}
+	</select>
+	
+	<!-- 新增，parameterType参数类型，可以是java基本对象，可以是对象，#{}表示取对应的参数 -->
+	<insert id="insertUser" parameterType="map">
+		insert into sys_user(uuid,code, name, sex_code,type_code,dept_code,account,email,org_code,state,id_card) values(#{uuid,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{sex_code,jdbcType=VARCHAR},#{type_code,jdbcType=VARCHAR},#{dept_code,jdbcType=VARCHAR},#{account,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{org_code,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{id_card,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateUser" parameterType="map">
+	 	update sys_user set code=#{code,jdbcType=VARCHAR},name=#{name,jdbcType=VARCHAR},sex_code=#{sex_code,jdbcType=VARCHAR},type_code=#{type_code,jdbcType=VARCHAR},dept_code=#{dept_code,jdbcType=VARCHAR},account=#{account,jdbcType=VARCHAR},email=#{email,jdbcType=VARCHAR},state=#{state,jdbcType=VARCHAR},id_card=#{id_card,jdbcType=VARCHAR} where uuid = #{uuid}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="deleteUser" parameterType="String">
+		delete from sys_user where uuid in(#{uuid})
+	</delete>
+	<!-- 删除 -->
+	<delete id="updateUserState" parameterType="String">
+		update sys_user set state=#{state} where uuid in(#{uuid})
+	</delete>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="oa">
+    <update id="deleteEmployee">
+        delete from EMPLOYEE
+    </update>
+    <insert id="batchInsertEmployees" parameterType="com.cmcc.mss.oa_pageinquiryemployeeinfosrv.OAPageInquiryEmployeeInfoSrvOutputItem" >
+        insert into employee (Employee_No,Login_Name ,Employee_Name ,Employee_Level ,Mobile ,
+            Mail ,Employee_Order ,Employee_Status ,Area_Name ,User_Num ,Last_Update_Time ,REFERENCE1)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.employeeNo},#{item.loginName},#{item.employeeName},
+             #{item.employeeLevel,javaType=string,jdbcType=INTEGER},#{item.mobile},#{item.mail},
+            #{item.employeeOrder},#{item.employeeStatus,javaType=string,jdbcType=INTEGER},
+            #{item.areaName},#{item.userNum},#{item.lastUpdateTime,javaType=javax.xml.datatype.XMLGregorianCalendar,typeHandler=root.report.db.GregorianCalendarTypeHandle},#{item.reference1})
+        </foreach>
+    </insert>
+    <update id="deleteDepartment">
+        delete from department
+    </update>
+    <insert id="batchInsertDepartment" parameterType="com.cmcc.mss.oa_pageinquirydepartmentinfosrv.OAPageInquiryDepartmentInfoSrvOutputItem" >
+        insert into department (Department_No,Department_Name ,Department_Parent_No ,Area_Name ,Company_Name ,
+        Department_Level ,Mail ,Department_Order ,Department_Status ,Last_Update_Time )
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.departmentNo},#{item.departmentName},#{item.departmentParentNo},
+            #{item.areaName},#{item.companyName},#{item.departmentLevel,javaType=string,jdbcType=INTEGER},
+            #{item.mail},#{item.departmentOrder},#{item.departmentStatus,javaType=string,jdbcType=INTEGER},
+            #{item.lastUpdateTime,javaType=javax.xml.datatype.XMLGregorianCalendar,typeHandler=root.report.db.GregorianCalendarTypeHandle})
+        </foreach>
+    </insert>
+    <update id="deleteDeptEmpRelation">
+        delete from employee_department
+    </update>
+    <insert id="batchInsertDeptEmpRelation" parameterType="com.cmcc.mss.oa_pageinquirydeptemprelationinfosrv.OAPageInquiryDeptEmpRelationInfoSrvOutputItem" >
+        insert into employee_department (Employee_No,Department_No ,Relation_Status ,Last_Update_Time )
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.employeeNo},#{item.departmentNo},#{item.relationStatus},
+            #{item.lastUpdateTime,javaType=javax.xml.datatype.XMLGregorianCalendar,typeHandler=root.report.db.GregorianCalendarTypeHandle})
+        </foreach>
+    </insert>
+    <select id="getUserDepartmentNo" parameterType="Map" resultType="String">
+        select department_no org_code from employee_department where employee_no=#{userName}
+           and Relation_Status =1
+    </select>
+</mapper>

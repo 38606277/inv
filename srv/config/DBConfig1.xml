@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DBConnection> 
+   <!-- <DB>
+      <name>system</name>
+      <driver>oracle.jdbc.OracleDriver</driver>
+      <dbtype>Oracle</dbtype>
+      <url>jdbc:oracle:thin:@114.251.247.78:11601:DEV3</url>
+       <url>jdbc:oracle:thin:@172.25.105.78:11701:DEV4</url>
+       <url>jdbc:oracle:thin:@114.251.247.78:11701:DEV4</url>
+       <url>jdbc:oracle:thin:@10.161.32.76:11501:JLPRD</url>
+
+      <url>jdbc:oracle:thin:@172.16.131.138:1521:orcl</url>
+      <url>jdbc:oracle:thin:@10.19.98.242:11581:SDPRD</url>
+      <url>jdbc:oracle:thin:@10.19.110.168:11581:SDPRD</url>
+      <username>apps</username>
+      <password>Y0pBthERE0A=</password>
+      <password>cvxKXOCQNhhShlWDWCuebw==</password>
+      <maxPoolSize>50</maxPoolSize>
+      <minPoolSize>3</minPoolSize>
+  </DB> -->  
+   <DB>
+      <name>form</name>
+      <dbtype>Mysql</dbtype>
+      <driver>com.mysql.cj.jdbc.Driver</driver>
+      <url>jdbc:mysql://127.0.0.1:3306/form</url>
+      <username>root</username>
+      <password>v600KuCLNBc=</password>
+      <maxPoolSize>50</maxPoolSize>
+      <minPoolSize>3</minPoolSize>
+   </DB>
+<!--   <DB>-->
+<!--      <name>form</name>-->
+<!--      <dbtype>Mysql</dbtype>-->
+<!--      <driver>com.mysql.cj.jdbc.Driver</driver>-->
+<!--      <url>jdbc:mysql://192.168.1.102:3306/form</url>-->
+<!--      <username>root</username>-->
+<!--      <password>dLf1GlaLvJQ=</password>-->
+<!--      <maxPoolSize>50</maxPoolSize>-->
+<!--      <minPoolSize>3</minPoolSize>-->
+<!--   </DB>-->
+   <DB>
+      <name>jlerp</name>  
+      <dbtype>Mysql</dbtype>  
+      <driver>com.mysql.cj.jdbc.Driver</driver>  
+      <!-- <url>jdbc:mysql://114.251.247.113:3306/report</url> -->  
+      <url>jdbc:mysql://127.0.0.1:3306/jlerp</url>  
+      <!-- <url>jdbc:mysql://10.19.110.170:3306/form</url> -->  
+      <!-- <url>jdbc:mysql://172.25.105.113:3306/form</url> -->  
+      <username>root</username>  
+      <password>v600KuCLNBc=</password>  
+      <maxPoolSize>50</maxPoolSize>  
+      <minPoolSize>3</minPoolSize> 
+   </DB>  
+   <!--<DB>-->  
+   <!--<name>form</name>-->  
+   <!--<dbtype>Mysql</dbtype>-->  
+   <!--<driver>org.h2.Driver</driver>-->  
+   <!--<url>jdbc:h2:file:~/.h2/DBName;AUTO_SERVER=TRUE</url>-->  
+   <!--<username>sa</username>-->  
+   <!--<password>sa=</password>-->  
+   <!--<maxPoolSize>50</maxPoolSize>-->  
+   <!--<minPoolSize>3</minPoolSize>-->  
+   <!--</DB>-->  
+   <!--<DB>-->  
+   <!--<name>form</name>-->  
+   <!--<dbtype>Mysql</dbtype>-->  
+   <!--<driver>org.sqlite.JDBC</driver>-->  
+   <!--<url>jdbc:sqlite:/Users/wangjian/Documents/iReport/file/db/test.sqlite;Version=3;</url>-->  
+   <!--<username></username>-->  
+   <!--<password></password>-->  
+   <!--<maxPoolSize>50</maxPoolSize>-->  
+   <!--<minPoolSize>3</minPoolSize>-->  
+   <!--</DB>-->  
+   <!-- <DB>
+       <dbtype>mongoDB</dbtype>
+       <name>rcmDB</name>
+       <url>114.251.247.113:27017</url>
+       <driver></driver>
+       <username></username>
+       <password></password>
+       <maxPoolSize></maxPoolSize>
+       <minPoolSize></minPoolSize>
+   </DB> -->  
+   <!--   <DB> -->  
+   <!--      <name>bkeam</name>  -->  
+   <!--      <driver>oracle.jdbc.OracleDriver</driver>  -->  
+   <!--      <dbtype>Oracle</dbtype>  -->  
+   <!--      <url>jjdbc:oracle:thin:@114.251.247.114:1521:xe</url>  -->  
+   <!--      <username>bkeam</username>  -->  
+   <!--      <password>dynd0xW9N5w=</password>  -->  
+   <!--      <maxPoolSize>50</maxPoolSize>  -->  
+   <!--      <minPoolSize>3</minPoolSize> -->  
+   <!--   </DB> -->  
+   <DB> 
+      <name>saaa</name>  
+      <driver>com.mysql.cj.jdbc.Driver</driver>  
+      <dbtype>Mysql</dbtype>  
+      <url>jdbc:mysql://127.0.0.1:3306/jlerp</url>  
+      <username>root</username>  
+      <password>v600KuCLNBc=</password>  
+      <maxPoolSize>50</maxPoolSize>  
+      <minPoolSize>3</minPoolSize> 
+   </DB>
+   <DB>
+      <name>bb</name>
+      <driver>com.mysql.cj.jdbc.Driver</driver>
+      <dbtype>Mysql</dbtype>
+      <url>jdbc:mysql://127.0.0.1:3306/bb</url>
+      <username>root</username>
+      <password>v600KuCLNBc=</password>
+      <maxPoolSize>50</maxPoolSize>
+      <minPoolSize>3</minPoolSize>
+   </DB>
+   <DB> 
+      <name>lee</name>  
+      <driver>com.mysql.cj.jdbc.Driver</driver>  
+      <dbtype>Mysql</dbtype>  
+      <url>jdbc:mysql://192.168.206.49:3306/aaljz</url>  
+      <username>appuser</username>  
+      <password>dLf1GlaLvJQ=</password>  
+      <maxPoolSize>50</maxPoolSize>  
+      <minPoolSize>3</minPoolSize> 
+   </DB>
+   <DB>
+      <name>hive</name>
+      <driver>org.apache.hive.jdbc.HiveDriver</driver>
+      <dbtype>hive</dbtype>
+      <url>jdbc:hive2://172.17.5.132:10000/default</url>
+      <username>root</username>
+      <password>dLf1GlaLvJQ=</password>
+      <maxPoolSize>50</maxPoolSize>
+      <minPoolSize>3</minPoolSize>
+   </DB>
+</DBConnection>

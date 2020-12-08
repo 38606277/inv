@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="upload">
+    <select id="getAll" resultType="Map" parameterType="Map">
+        SELECT  * from fnd_upload
+    </select>
+
+    <insert id="addUpload" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into fnd_upload(filename, filepath,filesize,filetype,fileoriginname,usefilepath)
+        values(#{filename},#{filepath},#{filesize},#{filetype},#{fileoriginname},#{usefilepath})
+    </insert>
+
+    <delete id="deleteUpload" parameterType="Map">
+        delete from fnd_upload where id =  #{id}
+    </delete>
+    <select id="getById" resultType="Map" parameterType="Map">
+         SELECT  * from fnd_upload where id =  #{id}
+    </select>
+</mapper>

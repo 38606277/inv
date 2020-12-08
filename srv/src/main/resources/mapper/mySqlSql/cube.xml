@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cube">
+
+    <!-- 增加 da_cube 中的记录，让此SQL能返回自增长主键 -->
+    <insert id="createCube" parameterType="Map"  useGeneratedKeys="true" keyProperty="id">
+        insert into da_cube(cube_name,cube_desc,cube_sql,qry_id,icon,class_name)
+        values ('${cube_name}',
+        <if test="cube_desc == null">NULL</if>
+        <if test="cube_desc != null">'${cube_desc}'</if>,
+        <if test="cube_sql == null">NULL</if>
+        <if test="cube_sql != null">'${cube_sql}'</if>,
+        <if test="qry_id == null">NULL</if>
+        <if test="qry_id != null">#{qry_id,jdbcType=INTEGER}</if>,
+        <if test="icon == null">NULL</if>
+        <if test="icon != null">'${icon}'</if>,
+        <if test="class_name == null">NULL</if>
+        <if test="class_name != null">'${class_name}'</if>
+        )
+    </insert>
+
+    <!-- 修改 da_cube 当中的记录 -->
+    <update id="updateCube" parameterType="Map">
+         update da_cube set
+         cube_name='${cube_name}',
+        cube_desc=
+        <if  test="cube_desc == null">NULL</if>
+        <if  test="cube_desc != null">'${cube_desc}'</if>,
+        cube_sql=
+        <if test="cube_sql == null">NULL</if>
+        <if test="cube_sql != null">'${cube_sql}'</if>,
+        qry_id=
+        <if test="qry_id == null">NULL</if>
+        <if test="qry_id != null">#{qry_id,jdbcType=INTEGER}</if>,
+        icon=
+        <if test="icon == null">NULL</if>
+        <if test="icon != null">'${icon}'</if>,
+        class_name=
+        <if test="class_name == null">NULL</if>
+        <if test="class_name != null">'${class_name}'</if>
+        where cube_id=#{cube_id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 根据id查询出 cube的信息 -->
+    <select id="getCubeById" parameterType="int" resultType="Map">
+        select cube_id,cube_name,cube_desc,cube_sql,qry_id,icon,class_name from da_cube where cube_id=#{cube_id,jdbcType=INTEGER}
+    </select>
+
+    <!-- 查找cube 表当中的所有记录  -->
+    <select id="getAllCube" resultType="Map" parameterType="map">
+        select cube_id,cube_name,cube_desc,cube_sql,qry_id,icon,class_name from da_cube where  1=1
+        <if test="cube_name != null and cube_name!=''">  and cube_name like '%${cube_name}%' </if>
+    </select>
+    <select id="countCube" resultType="int" parameterType="map">
+        select count(1) from da_cube where  1=1
+        <if test="cube_name != null and cube_name!=''">  and cube_name like '%${cube_name}%' </if>
+    </select>
+    <!-- 删除cude记录  -->
+    <delete id="deleteCubeById" parameterType="int">
+        delete from da_cube where cube_id=#{cube_id,jdbcType=INTEGER}
+    </delete>
+    <select id="getAllCubeforAuth" resultType="Map" parameterType="map">
+        select cube_id as `key`,cube_name as title from da_cube
+
+    </select>
+    <select id="getCubeInById"  resultType="Map" parameterType="Map">
+        select * from cube_in where 1=1
+        <if test="qry_id != null and qry_id!=''">  and qry_id=#{qry_id,jdbcType=INTEGER} </if>
+    </select>
+    <select id="getCubeOutById"  resultType="Map" parameterType="Map">
+        select * from cube_out where 1=1
+        <if test="qry_id != null and qry_id!=''">  and qry_id=#{qry_id,jdbcType=INTEGER} </if>
+    </select>
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="finance">
+
+
+
+    <select id="getDataView" parameterType="Map" resultType="Map">
+		SELECT
+			bt.table_id,
+			bt.table_name,
+			bt.table_desc,
+			bt.catalog_id,
+			ffv.FLEX_VALUE catalog_value,
+			bt.dbtype_id,
+			bt.source_id,
+			bt.host_id,
+			bt.url,
+			bt.data_count,
+			bt.create_date,
+			bt.create_by,
+			bt.update_date,
+			bt.update_by,
+			bt.data_update_date
+		FROM
+			bd_table AS bt
+			INNER JOIN fnd_flex_values ffv ON bt.catalog_id = ffv.FLEX_VALUE_ID
+			AND ffv.FLEX_VALUE_SET_ID = 4
+	</select>
+
+
+	<select id="getAllCorp" parameterType="Map" resultType="Map">
+		SELECT
+			bc.serial_number,
+			bc.corp_code,
+			bc.stock_abbre,
+			bc.corp_name,
+			bc.province,
+			bc.city,
+			bc.main_bussiness_income,
+			bc.net_profit,
+			bc.employees,
+			bc.listing_date,
+			bc.zhaogushu,
+			bc.financial_report,
+			bc.industry_classification,
+			bc.industry_type,
+			bc.main_business,
+			bc.holding
+		FROM
+			bd_corp AS bc
+		WHERE
+			bc.holding = '中国建材集团'
+	</select>
+	<select id="getFinReport" parameterType="Map" resultType="Map">
+		SELECT
+			max( bfr.item ) item,
+			sum( IF ( bfr.YEAR = '2010', bfr.amount, 0 ) ) AS '2010年',
+			sum( IF ( bfr.YEAR = '2011', bfr.amount, 0 ) ) AS '2011年',
+			sum( IF ( bfr.YEAR = '2012', bfr.amount, 0 ) ) AS '2012年',
+			sum( IF ( bfr.YEAR = '2013', bfr.amount, 0 ) ) AS '2013年',
+			sum( IF ( bfr.YEAR = '2014', bfr.amount, 0 ) ) AS '2014年',
+			sum( IF ( bfr.YEAR = '2015', bfr.amount, 0 ) ) AS '2015年',
+			sum( IF ( bfr.YEAR = '2016', bfr.amount, 0 ) ) AS '2016年',
+			sum( IF ( bfr.YEAR = '2017', bfr.amount, 0 ) ) AS '2017年',
+			sum( IF ( bfr.YEAR = '2018', bfr.amount, 0 ) ) AS '2018年',
+			sum( IF ( bfr.YEAR = '2019', bfr.amount, 0 ) ) AS '2019年'
+		FROM
+			bd_finance_report AS bfr
+		WHERE
+			bfr.corp_code = #{corp_code}
+		AND bfr.report_name = #{report_name}
+		AND bfr.`month` = 12
+		GROUP BY
+			bfr.item
+		ORDER BY bfr.row_number
+	</select>
+	<select id="getStudents" parameterType="Map" resultType="Map">
+		select * from m_student
+
+
+	</select>
+
+	<select id="getHbase" parameterType="Map" resultType="Map">
+		select
+		a."city_name" city_name,
+		a."province_id" province_id
+		from
+		"city" a
+	</select>
+
+	<select id="getRevenueTop10" parameterType="Map" resultType="Map">
+		SELECT
+			bfr.id,
+			bfr.corp_code,
+			bfr.corp_name,
+			bfr.report_name,
+			bfr.row_number,
+			bfr.item,
+			bfr.`year`,
+			bfr.amount,
+			bfr.`month`
+		FROM
+			bd_finance_report AS bfr
+		WHERE
+			bfr.item = '主营业务收入(万元)'
+			AND bfr.`year` = 2019
+			AND bfr.`month` = 12
+		and bfr.corp_code not in ('600585','000401')
+		ORDER BY
+			bfr.amount DESC
+	</select>
+
+
+	<select id="getNetProfitTop10" parameterType="Map" resultType="Map">
+		SELECT
+			bfr.id,
+			bfr.corp_code,
+			bfr.corp_name,
+			bfr.report_name,
+			bfr.row_number,
+			bfr.item,
+			bfr.`year`,
+			bfr.amount,
+			bfr.`month`
+		FROM
+			bd_finance_report AS bfr
+		WHERE
+			bfr.item = '净利润(万元)'
+		    and bfr.report_name='主要财务指标'
+			AND bfr.`year` = 2019
+			AND bfr.`month` = 12
+		    and bfr.corp_code not in ('600585','000401')
+		ORDER BY
+			bfr.amount DESC
+	</select>
+
+	<select id="getTotalProfitTop10" parameterType="Map" resultType="Map">
+		SELECT
+			bfr.id,
+			bfr.corp_code,
+			bfr.corp_name,
+			bfr.report_name,
+			bfr.row_number,
+			bfr.item,
+			bfr.`year`,
+			bfr.amount,
+			bfr.`month`
+		FROM
+			bd_finance_report AS bfr
+		WHERE
+			bfr.item = '利润总额(万元)'
+			and bfr.report_name='主要财务指标'
+			AND bfr.`year` = 2019
+			AND bfr.`month` = 12
+		    and bfr.corp_code not in ('600585','000401')
+		ORDER BY
+			bfr.amount DESC
+	</select>
+
+
+</mapper>

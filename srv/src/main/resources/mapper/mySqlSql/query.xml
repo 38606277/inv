@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="query">
+
+    <!-- 让此SQL能返回自增长主键 -->
+    <insert id="createQueryName" parameterType="Map"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO qry_name(class_id,qry_name,qry_desc,qry_type,qry_file,qry_db,qry_sql,qry_cursor_name,qry_http_url,
+        qry_http_header,qry_http_req_body,qry_http_res_body,qry_http_res_body_arrayname,cached)
+        VALUES ('${class_id}', '${qry_name}',
+        <if  test="qry_desc == null">NULL</if>
+        <if  test="qry_desc != null">'${qry_desc}'</if>
+        ,
+        <if  test="qry_type == null">NULL</if>
+        <if  test="qry_type != null">'${qry_type}'</if>
+        ,
+        <if  test="qry_file == null">NULL</if>
+        <if  test="qry_file != null">'${qry_file}'</if>
+        ,
+        <if  test="qry_db == null">NULL</if>
+        <if  test="qry_db != null">'${qry_db}'</if>
+        ,
+        <if  test="qry_sql == null">NULL</if>
+        <if  test="qry_sql != null">'${qry_sql}'</if>
+        ,
+        <if  test="qry_cursor_name == null">NULL</if>
+        <if  test="qry_cursor_name != null">'${qry_cursor_name}'</if>
+        ,
+        <if  test="qry_http_url == null">NULL</if>
+        <if  test="qry_http_url != null">'${qry_http_url}'</if>
+        ,
+        <if  test="qry_http_header == null">NULL</if>
+        <if  test="qry_http_header != null">'${qry_http_header}'</if>
+        ,
+        <if  test="qry_http_req_body == null">NULL</if>
+        <if  test="qry_http_req_body != null">'${qry_http_req_body}'</if>
+        ,
+        <if  test="qry_http_res_body == null">NULL</if>
+        <if  test="qry_http_res_body != null">'${qry_http_res_body}'</if>
+        ,
+        <if  test="qry_http_res_body_arrayname == null">NULL</if>
+        <if  test="qry_http_res_body_arrayname != null">'${qry_http_res_body_arrayname}'</if>
+        ,
+        <if  test="cached == null">NULL</if>
+        <if  test="cached != null">${cached}</if>
+        )
+    </insert>
+
+    <!--  插入数据到query_in表-->
+    <insert id="createQueryIn" parameterType="Map">
+        INSERT INTO qry_in
+        (qry_id,in_id,in_name,datatype,dict_id,validate,default_value,authtype_id,render)
+        VALUES (
+        <if  test="qry_id != null">${qry_id}</if>,
+        '${in_id}', '${in_name}', '${datatype}',
+        <if  test="dict_id == null or dict_id == ''">NULL</if>
+        <if  test="dict_id != null and dict_id != ''">#{dict_id,jdbcType=INTEGER}</if>
+        ,
+        <if  test="validate == null">NULL</if>
+        <if  test="validate != null">'${validate}'</if>
+        ,
+        <if  test="default_value == null">NULL</if>
+        <if  test="default_value != null">'${default_value}'</if>
+        ,
+        <if  test="authtype_id == null">NULL</if>
+        <if  test="authtype_id != null">'${authtype_id}'</if>
+        ,
+        <if  test="render == null">NULL</if>
+        <if  test="render != null">'${render}'</if>
+        )
+    </insert>
+
+    <!-- 往 query_out表中插入数据 -->
+    <insert id="createQueryOut" parameterType="Map">
+
+        INSERT INTO qry_out
+        (qry_id,out_id,out_name,datatype,link,width,render)
+        VALUES (
+        <if  test="qry_id != null">#{qry_id,jdbcType=INTEGER}</if>,
+        '${out_id}', '${out_name}',
+        <if  test="datatype == null">NULL</if>
+        <if  test="datatype != null">'${datatype}'</if>
+        ,
+        <if  test="link == null">NULL</if>
+        <if  test="link != null">'${link}'</if>
+        ,
+        <if  test="width == null">NULL</if>
+        <if  test="width != null">#{width,jdbcType=DOUBLE}</if>
+        ,
+        <if  test="render == null">NULL</if>
+        <if  test="render != null">'${render}'</if>
+        )
+
+    </insert>
+
+
+
+    <!-- 修改qry_name表当中的记录 -->
+    <update id="updateQueryName" parameterType="Map" >
+        update qry_name set
+        class_id='${class_id}',qry_name=
+        <if  test="qry_name == null">NULL</if>
+        <if  test="qry_name != null">'${qry_name}'</if>
+        ,qry_desc=
+        <if  test="qry_desc == null">NULL</if>
+        <if  test="qry_desc != null">'${qry_desc}'</if>
+        ,qry_type=
+        <if  test="qry_type == null">NULL</if>
+        <if  test="qry_type != null">'${qry_type}'</if>
+        ,qry_db=
+        <if  test="qry_db == null">NULL</if>
+        <if  test="qry_db != null">'${qry_db}'</if>
+        ,qry_file=
+        <if  test="qry_file == null">NULL</if>
+        <if  test="qry_file != null">'${qry_file}'</if>
+        ,qry_sql=
+        <if  test="qry_sql == null">NULL</if>
+        <if  test="qry_sql != null">'${qry_sql}'</if>
+        ,qry_cursor_name=
+        <if  test="qry_cursor_name == null">NULL</if>
+        <if  test="qry_cursor_name != null">'${qry_cursor_name}'</if>
+        ,qry_http_url=
+        <if  test="qry_http_url == null">NULL</if>
+        <if  test="qry_http_url != null">'${qry_http_url}'</if>
+        ,qry_http_header=
+        <if  test="qry_http_header == null">NULL</if>
+        <if  test="qry_http_header != null">'${qry_http_header}'</if>
+        ,qry_http_req_body=
+        <if  test="qry_http_req_body == null">NULL</if>
+        <if  test="qry_http_req_body != null">'${qry_http_req_body}'</if>
+        ,qry_http_res_body=
+        <if  test="qry_http_res_body == null">NULL</if>
+        <if  test="qry_http_res_body != null">'${qry_http_res_body}'</if>
+        ,qry_http_res_body_arrayname=
+        <if  test="qry_http_res_body_arrayname == null">NULL</if>
+        <if  test="qry_http_res_body_arrayname != null">'${qry_http_res_body_arrayname}'</if>
+        ,cached=
+        <if  test="cached == null">NULL</if>
+        <if  test="cached != null">${cached}</if>
+        where qry_id=#{qry_id,jdbcType=INTEGER}
+    </update>
+
+    <!--  删除query_in表当中的一条数据 -->
+    <delete id="deleteQueryIn" parameterType="Map">
+        delete from qry_in where qry_id=#{qry_id,jdbcType=INTEGER} and in_id='${in_id}'
+    </delete>
+
+    <!--查询函数输出参数表-->
+    <delete id="deleteQueryOut" parameterType="Map">
+        delete from qry_out where qry_id=#{qry_id,jdbcType=INTEGER} and out_id='${out_id}'
+    </delete>
+
+    <update id="updateQueryOutForLink" parameterType="Map">
+        update qry_out set link='${link}' where qry_id=#{qry_id,jdbcType=INTEGER} and out_id='${out_id}'
+    </update>
+
+    <!--删除 qry_name -->
+    <delete id="deleteQueryName" parameterType="int">
+        delete from  qry_name
+        where qry_id=#{qry_id,jdbcType=INTEGER}
+    </delete>
+
+    <!--删除函数输入参数表数据-->
+    <delete id="deleteQueryInByFuncId" parameterType="int">
+        delete from qry_in where qry_id=#{qry_id,jdbcType=INTEGER}
+    </delete>
+
+    <!--查询函数输出参数表-->
+    <delete id="deleteQueryOutByFuncId" parameterType="int">
+        delete from qry_out where qry_id=#{qry_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 往query_class表中新增一条记录 -->
+    <insert id="createQueryClass" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into qry_class(class_name) values('${class_name}')
+    </insert>
+
+    <select id="getQueryInfoRelationClass" parameterType="int" resultType="int">
+        select count(1) from qry_name where class_id=#{class_id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteQueryClass"  parameterType="int">
+        delete from qry_class where class_id=#{class_id}
+    </delete>
+
+    <update id="updateQueryClass"  parameterType="Map">
+        update qry_class
+        <trim prefix="set" suffixOverrides=",">
+            <if test="class_name!=null">class_name='${class_name}',</if>
+            <if test="img_file!=null">img_file='${img_file}'</if>
+        </trim>
+        where class_id=#{class_id};
+    </update>
+
+    <select id="getQueryNameById" parameterType="int" resultType="String">
+        SELECT
+        qn.qry_name
+        FROM
+        qry_name qn
+        WHERE
+        qn.qry_id = #{_parameter}
+    </select>
+    <!-- 根据qry_id查询qry_name跟qry_class信息  -->
+    <select id="getNameByID" parameterType="Map" resultType="Map">
+        SELECT
+        qn.qry_id ,
+        qn.qry_name ,
+        qn.qry_desc ,
+        qc.class_id,
+        qc.class_name ,
+        qn.qry_type ,
+        qn.qry_file,
+        qn.qry_db,
+        qn.qry_sql,qn.qry_cursor_name,qn.qry_http_url,
+        qn.qry_http_header,qn.qry_http_req_body,qn.qry_http_res_body,
+        qn.qry_http_res_body_arrayname,qn.cached
+        FROM
+        qry_name qn ,
+        qry_class qc
+        WHERE
+        qc.class_id = qn.class_id
+        and qn.qry_id = ${qry_id}
+    </select>
+
+    <!-- 根据qry_id查询qry_in信息 TODO:是否含有 func_dict qry_dict表 fnd_authtype qry_authtype表？ -->
+    <select id="getInByID" parameterType="Map" resultType="Map">
+        SELECT
+        qi.qry_id ,
+        qi.in_id ,
+        qi.in_name ,
+        qi.datatype ,
+        qi.dict_id ,
+        fd.dict_name ,
+        qi.dict_multiple,
+        qi.validate ,
+        qi.authtype_id ,
+        qi.render,
+        fat.authtype_desc
+        FROM
+        qry_in qi
+        LEFT JOIN func_dict fd ON qi.dict_id = fd.dict_id
+        LEFT JOIN fnd_authtype fat ON qi.authtype_id = fat.authtype_id
+        WHERE
+        qi.qry_id =  ${qry_id}
+    </select>
+
+    <!--查我函数名称-->
+    <select id="getOutByID" parameterType="Map" resultType="Map">
+        SELECT
+        qo.qry_id ,
+        qo.out_id ,
+        qo.out_name ,
+        qo.datatype,
+        qo.link,
+        qo.width,
+        qo.render
+        FROM
+        qry_out qo
+        WHERE
+        qo.qry_id =${qry_id}
+    </select>
+
+    <!--查我函数名称-->
+    <select id="getOutByMap" parameterType="Map" resultType="Map">
+        SELECT
+        qo.qry_id ,
+        qo.out_id ,
+        qo.out_name ,
+        qo.datatype,
+        qo.link,
+        qo.width,
+        qo.render
+        FROM
+        qry_out qo
+        WHERE
+        qo.qry_id =${qry_id} and qo.out_id='${out_id}'
+    </select>
+
+    <!--查我函数名称-->
+    <select id="getAllQueryName" parameterType="Map" resultType="Map">
+        SELECT
+        qry.qry_id,
+        qry.qry_name,
+        qry.qry_desc,
+        qc.class_id,
+        qc.class_name,
+        qry.qry_type,
+        qry.qry_file,
+        qry.qry_db,
+        qry.qry_sql,qry.qry_cursor_name,qry.qry_http_url,
+        qry.qry_http_header,qry.qry_http_req_body,qry.qry_http_res_body,qry.qry_http_res_body_arrayname
+        FROM
+        qry_name qry,
+        qry_class qc
+        WHERE
+        qc.class_id = qry.class_id
+    </select>
+
+    <!--查我函数名称-->
+    <!--查我函数类别-->
+    <select id="getAllQueryClass" parameterType="Map" resultType="Map">
+        SELECT
+        qry.class_id ,
+        qry.class_name,
+        qry.img_file
+        FROM
+        qry_class qry
+    </select>
+
+    <!-- 根据 class_id 查询 qry_name的所有信息 -->
+    <select id="getQueryNameInfoByClassID" parameterType="int" resultType="Map">
+        SELECT
+        qry.qry_id,
+        qry.qry_name,
+        qry.qry_desc,
+        qc.class_id,
+        qc.class_name,
+        qry.qry_type,
+        qry.qry_db,
+        qry.qry_sql,
+        qry.qry_file,qry.qry_cursor_name,qry.qry_http_url,
+        qry.qry_http_header,qry.qry_http_req_body,qry.qry_http_res_body,qry.qry_http_res_body_arrayname
+        FROM
+        qry_name qry,
+        qry_class qc
+        WHERE
+        qc.class_id = #{class_id,jdbcType=INTEGER}
+        and qc.class_id = qry.class_id
+    </select>
+    <!-- 根据 class_id 查询 qry_name的所有信息 -->
+    <select id="getQueryOutLink" parameterType="Map" resultType="Map">
+        SELECT
+        qol.qry_id ,
+        qol.out_id ,
+        qol.link_qry_id ,
+        qol.link_in_id ,
+        qol.link_in_id_value_type ,
+        qol.link_in_id_value,
+        qn.class_id,
+        qn.qry_name
+        FROM
+        qry_out_link qol
+        INNER join qry_name qn on qol.link_qry_id=qn.qry_id
+        WHERE
+        qol.qry_id = ${qry_id}
+        AND out_id = #{out_id}
+    </select>
+
+
+    <!-- 往query_out_lick表当中插入对应记录 -->
+    <insert id="createQueryOutLink" parameterType="Map">
+        insert into qry_out_link(qry_id,out_id,link_qry_id,link_in_id,link_in_id_value_type,link_in_id_value)
+        values (#{qry_id,jdbcType=INTEGER},'${out_id}',#{link_qry_id,jdbcType=INTEGER},'${link_in_id}','${link_in_id_value_type}',
+        '${link_in_id_value}')
+    </insert>
+
+    <!-- 根据qry_id 删除掉  qry_out_link表当中的记录 -->
+    <delete id="deleteQueryOutLinkByQryId" parameterType="int">
+        delete from qry_out_link where qry_id=#{qry_id,jdbcType=INTEGER}
+    </delete>
+
+    <!--  根据 qry_out_link的主键 删除掉 qry_out_link 表关联的记录  -->
+    <delete id="deleteQueryOutLinkByPrimary" parameterType="Map">
+        delete from qry_out_link where qry_id=#{qry_id,jdbcType=INTEGER}
+        and out_id='${out_id}' and link_qry_id=#{link_qry_id,jdbcType=INTEGER}
+        and link_in_id='${link_in_id}'
+    </delete>
+
+    <!--获取角色分配的权限-->
+    <select id="getAuthTree" parameterType="int" resultType="Map">
+        select DISTINCT a.auth_type,a.func_id from fnd_auth a
+        INNER join (select r.role_id from fnd_user_role r where r.user_id=#{user_id,jdbcType=INTEGER}) as role
+        on a.role_id=role.role_id;
+    </select>
+    <!--获取角色分配的权限-->
+    <select id="getAuthTreeAll"  resultType="Map">
+        select DISTINCT a.auth_type,a.func_id from fnd_auth a
+    </select>
+    <!--select  根据一级ID查询-->
+    <select id="getAllQueryClassByClassId" parameterType="int" resultType="Map">
+        SELECT qry.class_id as 'value', qry.class_name as 'name'
+        FROM  qry_class qry where qry.class_id=#{class_id,jdbcType=INTEGER}
+
+    </select>
+    <!--select  根据一级ID与二级ID一起查询-->
+    <select id="getQueryNameByClassIdQryId" parameterType="Map" resultType="Map">
+        SELECT  qry.qry_id as 'value', qry.qry_name as 'name'
+        FROM  qry_name qry where qry.class_id=#{class_id,jdbcType=INTEGER} and qry.qry_id=#{qry_id,jdbcType=INTEGER}
+    </select>
+
+    <!--select  根据一级ID查询-->
+    <select id="getAllFunctionClassByClassId" parameterType="int" resultType="Map">
+        SELECT func.class_id as 'value', func.class_name as 'name'
+        FROM  func_class func where func.class_id=#{class_id,jdbcType=INTEGER}
+
+    </select>
+    <!--select  根据一级ID与二级ID一起查询-->
+    <select id="getFunctionNameByClassIdPId" parameterType="Map" resultType="Map">
+        SELECT  func.func_id as 'value', func.func_name as 'name'
+        FROM  func_name func where func.class_id=#{class_id,jdbcType=INTEGER} and func.func_id=#{func_id,jdbcType=INTEGER}
+    </select>
+
+    <select id="getClassId" parameterType="Map" resultType="Map">
+        select DISTINCT q.class_id, q.class_name,a.auth_type from fnd_auth a
+        INNER JOIN qry_class q on a.func_id=q.class_id and a.auth_type='select'
+        <if  test="user_id != null and user_id!=1">
+            INNER join (select r.role_id from fnd_user_role r where r.user_id=#{user_id,jdbcType=INTEGER}) as role
+            on a.role_id=role.role_id
+        </if>
+        UNION
+        select DISTINCT f.class_id, f.class_name,a.auth_type from fnd_auth a
+        INNER JOIN func_class f on a.func_id=f.class_id and a.auth_type='function'
+        <if  test="user_id != null and user_id!=1">
+            INNER join (select r.role_id from fnd_user_role r where r.user_id=#{user_id,jdbcType=INTEGER}) as role
+            on a.role_id=role.role_id
+        </if>
+    </select>
+    <!-- 查找cube 表当中的所有记录  -->
+    <select id="getAllQueryNameList" resultType="Map" parameterType="map">
+        select * from qry_name where  1=1
+        <if test="qry_name != null and qry_name!=''">  and qry_name like '%${qry_name}%' </if>
+    </select>
+    <select id="countQueryName" resultType="int" parameterType="map">
+        select count(1) from qry_name where  1=1
+        <if test="qry_name != null and qry_name!=''">  and qry_name like '%${qry_name}%' </if>
+    </select>
+    <!-- nlp查找查询名称  -->
+    <select id="getQueryByName" resultType="Map" parameterType="map">
+        select qry_id,qry_name,class_id from qry_name where  1=1
+        <if test="qry_name != null and qry_name!=''">
+            and qry_name like '%${qry_name}%'
+        </if>
+    </select>
+
+    <resultMap type="java.util.HashMap" id="cursorMap">
+
+    </resultMap>
+
+    <!-- nlp查找输出字段  -->
+    <select id="getQueryByOutName" resultType="Map" parameterType="map">
+        SELECT
+        qn.qry_id ,
+        qn.qry_name ,
+        qn.class_id ,
+        qo.out_name
+        FROM
+        qry_out qo ,
+        qry_name qn
+        WHERE
+        1 = 1
+        AND qo.qry_id = qn.qry_id
+        <if test="out_name != null and out_name!=''">
+            and qry_name like '%${out_name}%'
+        </if>
+    </select>
+
+</mapper>

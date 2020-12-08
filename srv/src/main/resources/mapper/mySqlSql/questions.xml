@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="question">
+
+    <select id="getQuestionList" parameterType="Map" resultType="Map">
+        SELECT *  FROM ai_chat_question
+    </select>
+
+    <select id="getQuestionByPKID" parameterType="Map" resultType="Map">
+        SELECT *  FROM ai_chat_question   where  ai_question_id=#{ai_question_id,jdbcType=INTEGER}
+        <if  test="ai_question != null and ai_question!=''"> and  ai_question LIKE '%${ai_question}%'</if>
+    </select>
+
+
+    <!--  创建func_dict信息  -->
+    <insert id="createQuestion" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_chat_question(ai_question,fileDataBlob)  values ('${ai_question}',#{fileDataBlob})
+    </insert>
+    <!--  创建func_dict信息  -->
+    <insert id="createQuestionAudio" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_chat_question(fileDataBlob)  values (<if  test="fileDataBlob == null">NULL</if>
+        <if  test="fileDataBlob != null">#{fileDataBlob}</if>)
+    </insert>
+    <!-- 创建func_dict_out 信息 -->
+    <insert id="createAnswer" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_chat_answer(question_id,`current`,answer,creat_date,creat_by,fileDataBlob)
+        values (#{question_id,jdbcType=INTEGER},
+        <if  test="current == null">NULL</if>
+        <if  test="current != null">'${current}'</if>,
+        <if  test="answer == null">NULL</if>
+        <if  test="answer != null">'${answer}'</if>,
+        now(),
+        <if  test="creat_by == null">NULL</if>
+        <if  test="creat_by != null">'${creat_by}'</if>,
+        <if  test="fileDataBlob == null">NULL</if>
+        <if  test="fileDataBlob != null">#{fileDataBlob}</if>
+        )
+    </insert>
+    <!-- 创建func_dict_out 信息 -->
+    <insert id="createAnswerAudio" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into ai_chat_answer(question_id,fileDataBlob)
+        values (#{question_id,jdbcType=INTEGER},
+        <if  test="fileDataBlob == null">NULL</if>
+        <if  test="fileDataBlob != null">#{fileDataBlob}</if>
+        )
+    </insert>
+    <!-- 根据 dict_id 删除 func_dict 表的信息 -->
+    <delete id="deleteQuestion" parameterType="int">
+        delete from ai_chat_question where ai_question_id=#{ai_question_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 根据dict_id 跟 dict_out_id 删除func_dict_out 表相关信息  -->
+    <delete id="deleteAnswer" parameterType="int">
+        delete from ai_chat_answer where answer_id=#{answer_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 根据dict_id 跟 dict_out_id 删除func_dict_out 表相关信息  -->
+    <delete id="deleteAnswerByqID" parameterType="int">
+        delete from ai_chat_answer where question_id=#{question_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 修改 func_dict 表的信息 -->
+    <update id="updateQuestion" parameterType="Map">
+		update ai_chat_question set ai_question='${ai_question}'
+		 where ai_question_id=#{ai_question_id,jdbcType=INTEGER}
+	</update>
+    <!-- 修改 func_dict 表的信息 -->
+    <update id="updateQuestionAudio" parameterType="Map">
+        update ai_chat_question set fileDataBlob=
+        <if  test="fileDataBlob == null">NULL</if>
+        <if  test="fileDataBlob != null">#{fileDataBlob}</if>
+        where ai_question_id=#{ai_question_id,jdbcType=INTEGER}
+    </update>
+    <!-- 修改 func_dict 表的信息 -->
+    <update id="updateAnswer" parameterType="Map">
+        update ai_chat_answer set `current`='${current}',
+        answer='${answer}',
+        creat_date=now(),
+        creat_by=
+        <if  test="creat_by == null">NULL</if>
+        <if  test="creat_by != null">'${creat_by}'</if>
+        where answer_id=#{answer_id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 修改 func_dict 表的信息 -->
+    <update id="updateAnswerAudio" parameterType="Map">
+        update ai_chat_answer set
+        fileDataBlob=
+        <if  test="fileDataBlob == null">NULL</if>
+        <if  test="fileDataBlob != null">#{fileDataBlob}</if>
+        where answer_id=#{answer_id,jdbcType=INTEGER}
+    </update>
+    <select id="getAnswerList" parameterType="Map" resultType="Map">
+        SELECT *  FROM ai_chat_answer where 1=1
+        <if  test="question_id != null and question_id!=''"> and  question_id = '${question_id}'</if>
+        <if  test="answer != null and answer!=''"> and  answer like '%${answer}%'</if>
+
+    </select>
+
+
+    <select id="getDefaultAnswerList" parameterType="Map" resultType="Map">
+        SELECT *  FROM ai_chat_answer where 1=1 and current='1'
+        <if  test="question_id != null and question_id!=''"> and  question_id = '${question_id}'</if>
+
+    </select>
+    <select id="getAnswerByPKID" parameterType="Map" resultType="Map">
+        SELECT *  FROM ai_chat_answer   where  answer_id=#{answer_id,jdbcType=INTEGER}
+    </select>
+</mapper>

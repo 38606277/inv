@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="localBudgetDept">
+
+    <select id="getAll" resultType="Map" parameterType="Map">
+        select DISTINCT BUDGET_YEAR,COMPANY_CODE,ORG_CODE,COMPANY_NAME,DEPARTMENT_NAME,BUDGET_ACCOUNT_NAME,
+        PROJECT_NUMBER,PROJECT_NAME,BMS_CURRENT_PERSON,APPROVED_BUDGET_AMOUNT,SUBMIT_HT_AMOUNT,
+        DOCUMENT_CODE,DOCUMENT_DESCRIPTION,HT_CURRENT_PERSON,HT_AMOUNT,HT_PROFIT_FROM,HT_PROFIT_TO,
+        HT_SUPPLIER,FROM_DEPT,DOCUMENT_CREATE_BY,BZ_DOCUMENT_NUMBER,BZ_DOCUMENT_CREATE_BY,BZ_CURRENT_PERSON,
+        BZ_AMOUNT,ORDER_NUMBER,TOTAL_ORDER_AMOUNT,TOTAL_NOT_IN_ACCOUNT,ORDER_BILL_AMOUNT from  my_budget_depart_detail mbdd
+        <trim prefix="where" prefixOverrides="AND">
+            <if test="budget_year!=null and budget_year!=''">
+                AND mbdd.budget_year = '${budget_year}'
+            </if>
+            <if test="department_name!=null and department_name!=''">
+                AND mbdd.DEPARTMENT_NAME = '${department_name}'
+            </if>
+            <if test="company_code!=null and company_code!='' and company_code!='0'">
+                AND mbdd.company_code = '${company_code}'
+            </if>
+            <if test="project_number!=null and project_number!=''">
+                AND mbdd.project_number = '${project_number}'
+            </if>
+            <if test="project_number!=null and budget_year!=''">
+                AND mbdd.project_number = '${project_number}'
+            </if>
+            <if test="project_name!=null and project_name!=''">
+                AND mbdd.project_name like '%${project_name}%'
+            </if>
+            <if test="budget_account_name!=null and budget_account_name!=''">
+                AND mbdd.BUDGET_ACCOUNT_NAME like '%${budget_account_name}%'
+            </if>
+            <if test="document_code!=null and document_code!=''">
+                AND mbdd.DOCUMENT_CODE = '${document_code}'
+            </if>
+            <if test="document_description!=null and document_description!=''">
+                AND mbdd.DOCUMENT_DESCRIPTION like '%${document_description}%'
+            </if>
+            <if test="order_number!=null and order_number!=''">
+                AND mbdd.ORDER_NUMBER = '${order_number}'
+            </if>
+            <if test="bz_document_number!=null and bz_document_number!=''">
+                AND mbdd.BZ_DOCUMENT_NUMBER = '${bz_document_number}'
+            </if>
+        </trim>
+        ORDER BY
+        mbdd.COMPANY_CODE,
+        mbdd.ORG_CODE,
+        mbdd.DOCUMENT_CODE,
+        mbdd.ORDER_NUMBER DESC
+    </select>
+
+</mapper>

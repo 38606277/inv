@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="sysFun">
+	<select id="getRowCount" parameterType="String" resultType="Integer">  
+	    ${sql}
+	</select>   
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectFuntion" resultType="map" parameterType="map">
+		 select * from sys_func f where 1=1 
+			 <if test="funcName!=null and funcName!='' ">and f.func_name like '%${funcName}%'</if>
+			 <if test="url!=null and url!='' ">and f.url like '%${url}%'</if>
+			 <if test="state!=null and state!='' ">and f.state=${state}</if>
+			 order by func_id desc
+	</select>
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectOneSysFunc" resultType="map">
+		select * from sys_func where func_id=#{funcId}
+	</select>
+	
+	<!-- 新增，parameterType参数类型，可以是java基本对象，可以是对象，#{}表示取对应的参数 -->
+	<insert id="insertSysFunc" parameterType="map">
+		insert into sys_user(uuid,code, name, sex_code,type_code,dept_code,account,email) values(#{uuid,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{sex_code,jdbcType=VARCHAR},#{type_code,jdbcType=VARCHAR},#{dept_code,jdbcType=VARCHAR},#{account,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateSysFunc" parameterType="map">
+	 	update sys_user set code=#{code,jdbcType=VARCHAR},name=#{name,jdbcType=VARCHAR},sex_code=#{sex_code,jdbcType=VARCHAR},type_code=#{type_code,jdbcType=VARCHAR},dept_code=#{dept_code,jdbcType=VARCHAR},account=#{account,jdbcType=VARCHAR},email=#{email,jdbcType=VARCHAR} where uuid = #{uuid}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="deleteSysFunc" parameterType="String">
+		delete from sys_user where uuid in(#{uuid})
+	</delete>
+	<!-- 删除 -->
+	<delete id="updateSysFuncState" parameterType="String">
+		update sys_user set state=#{state} where uuid in(#{uuid})
+	</delete>
+</mapper>

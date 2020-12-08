@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hbasemetadata">
+
+    <!-- 增加 da_cube 中的记录，让此SQL能返回自增长主键 -->
+    <insert id="insertMysqlMetadata" parameterType="Map"  useGeneratedKeys="true" keyProperty="id">
+        insert into bd_table(table_id,table_name,table_desc,catalog_id,dbtype_id,source_id,host_id,url,data_count,create_date,create_by,update_date,update_by,data_update_date)
+        values ('${table_id}',
+        <if test="table_name == null">NULL</if>
+        <if test="table_name != null">'${table_name}'</if>,
+        <if test="table_desc == null">NULL</if>
+        <if test="table_desc != null">'${table_desc}'</if>,
+        <if test="catalog_id == null">NULL</if>
+        <if test="catalog_id != null">'${catalog_id}'</if>,
+        <if test="dbtype_id == null">NULL</if>
+        <if test="dbtype_id != null">'${dbtype_id}'</if>,
+        <if test="source_id == null">NULL</if>
+        <if test="source_id != null">'${source_id}'</if>,
+        <if test="host_id == null">NULL</if>
+        <if test="host_id != null">'${host_id}'</if>,
+        <if test="url == null">NULL</if>
+        <if test="url != null">'${url}'</if>,
+        <if test="data_count == null">NULL</if>
+        <if test="data_count != null">'${data_count}'</if>,
+        <if test="create_date == null">NULL</if>
+        <if test="create_date != null">str_to_date(#{create_date},'%Y%m%d')</if>,
+        <if test="create_by == null">NULL</if>
+        <if test="create_by != null">'${create_by}'</if>,
+        <if test="update_date == null">NULL</if>
+        <if test="update_date != null">str_to_date(#{update_date},'%Y%m%d')</if>,
+        <if test="update_by == null">NULL</if>
+        <if test="update_by != null">'${update_by}'</if>,
+        <if test="data_update_date == null">NULL</if>
+        <if test="data_update_date != null">str_to_date(#{data_update_date},'%Y%m%d')</if>
+        )
+    </insert>
+
+    <!-- 修改 dashboard 记录 -->
+    <update id="updateDashBoard"  parameterType="Map">
+        update dashboard set
+        class_id='${class_id}',
+        dashboard_name=
+        <if  test="dashboard_name == null">NULL</if>
+        <if  test="dashboard_name != null">'${dashboard_name}'</if>,
+        dashboard_desc=
+        <if test="dashboard_desc == null">NULL</if>
+        <if test="dashboard_desc != null">'${dashboard_desc}'</if>,
+        tempate=
+        <if test="tempate == null">NULL</if>
+        <if test="tempate != null">#{tempate,jdbcType=INTEGER}</if>,
+        icon=
+        <if test="icon == null">NULL</if>
+        <if test="icon != null">'${icon}'</if>,
+        param=
+        <if test="param == null">NULL</if>
+        <if test="param != null">'${param}'</if>
+        where dashboard_id=#{dashboard_id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getDashBoardById" parameterType="int" resultType="Map">
+        select dashboard_id,class_id,dashboard_name,dashboard_desc,tempate,param,icon from dashboard where dashboard_id=#{dashboard_id,jdbcType=INTEGER}
+    </select>
+
+    <select id="getAllDashboard" parameterType="Map" resultType="Map">
+        select dashboard_id,class_id,dashboard_name,dashboard_desc,tempate,param,icon from dashboard where 1=1
+        <if test="dashboard_name != null and dashboard_name!=''">  and dashboard_name like '%${dashboard_name}%' </if>
+    </select>
+
+    <select id="countAllDashboard" resultType="int" parameterType="Map">
+         select count(1) from dashboard where 1=1
+        <if test="dashboard_name != null and dashboard_name!=''">  and dashboard_name like '%${dashboard_name}%' </if>
+    </select>
+
+    <delete id="deleteDashBoardById" parameterType="int">
+        delete from dashboard where dashboard_id=#{dashboard_id,jdbcType=INTEGER}
+    </delete>
+    <select id="getAllDashboardforAuth" parameterType="Map" resultType="Map">
+        select dashboard_id as `key`,dashboard_name as title from dashboard
+    </select>
+
+    <select id="getTableNamesByCatalog" resultType="Map" parameterType="String">
+       select * from da_table where table_catalog = #{catalog}
+    </select>
+
+    <select id="getTableNames" resultType="Map" parameterType="String">
+       select *  from ${tableName}
+    </select>
+
+    <select id="getTreeNode" resultType="Map" parameterType="String">
+       select catalog_id as id,catalog_pid as pid ,table_catalog as name from da_table where catalog_id!=''  and table_catalog!=''
+    </select>
+
+    <select id="tableRecordsNumber" resultType="Map" parameterType="String">
+       select count(1) as recordsnumber  from ${tableName}
+    </select>
+
+    <!-- 修改 dashboard 记录 -->
+    <update id="modifyDataCount"  parameterType="Map">
+        update bd_table set
+        data_count=
+        <if test="data_count == null">NULL</if>
+        <if test="data_count != null">${data_count}</if>
+        where table_name=#{tableName,jdbcType=VARCHAR} and host_id=#{dbName,jdbcType=VARCHAR}
+    </update>
+
+
+    <select id="getTableStructure" resultType="Map" parameterType="String">
+        select COLUMN_NAME,COLUMN_FAMILY from SYSTEM.CATALOG where TABLE_NAME=#{tableName,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dataAsset">
+
+
+
+    <select id="getDataView" parameterType="Map" resultType="Map">
+		SELECT
+			bt.table_id,
+			bt.table_name,
+			bt.table_desc,
+			bt.catalog_id,
+			ffv.FLEX_VALUE catalog_value,
+			bt.dbtype_id,
+			bt.source_id,
+			bt.host_id,
+			bt.url,
+			bt.data_count,
+			bt.create_date,
+			bt.create_by,
+			bt.update_date,
+			bt.update_by,
+			bt.data_update_date
+		FROM
+			bd_table AS bt
+			INNER JOIN fnd_flex_values ffv ON bt.catalog_id = ffv.FLEX_VALUE_ID
+			AND ffv.FLEX_VALUE_SET_ID = 4
+	</select>
+
+	<select id="getTablesBySource" parameterType="Map" resultType="Map">
+		SELECT
+			bt.table_id,
+			bt.table_name,
+			bt.table_desc,
+			bt.catalog_id,
+			ffv.FLEX_VALUE catalog_value,
+			bt.dbtype_id,
+			bt.source_id,
+			bt.host_id,
+			bt.url,
+			bt.data_count,
+			bt.create_date,
+			bt.create_by,
+			bt.update_date,
+			bt.update_by,
+			bt.data_update_date
+		FROM
+			bd_table AS bt
+			INNER JOIN fnd_flex_values ffv ON bt.catalog_id = ffv.FLEX_VALUE_ID
+		AND ffv.flex_value_set_id = 4
+		AND bt.source_id = #{source_id}
+	</select>
+
+	<select id="getTablesByCatalog" parameterType="Map" resultType="Map">
+		SELECT
+		bt.table_id,
+		bt.table_name,
+		bt.table_desc,
+		bt.catalog_id,
+		ffv.FLEX_VALUE catalog_value,
+		bt.dbtype_id,
+		bt.source_id,
+		bt.host_id,
+		bt.url,
+		bt.data_count,
+		bt.create_date,
+		bt.create_by,
+		bt.update_date,
+		bt.update_by,
+		bt.data_update_date
+		FROM
+		bd_table AS bt
+		INNER JOIN fnd_flex_values ffv ON bt.catalog_id = ffv.FLEX_VALUE_ID
+		AND ffv.flex_value_set_id = 4
+		AND bt.catalog_id = #{catalog_id}
+	</select>
+
+
+	<select id="getTablesByDbType" parameterType="Map" resultType="Map">
+		SELECT
+		bt.table_id,
+		bt.table_name,
+		bt.table_desc,
+		bt.catalog_id,
+		ffv.FLEX_VALUE catalog_value,
+		bt.dbtype_id,
+		bt.source_id,
+		bt.host_id,
+		bt.url,
+		bt.data_count,
+		bt.create_date,
+		bt.create_by,
+		bt.update_date,
+		bt.update_by,
+		bt.data_update_date
+		FROM
+		bd_table AS bt
+		INNER JOIN fnd_flex_values ffv ON bt.catalog_id = ffv.FLEX_VALUE_ID
+		AND ffv.flex_value_set_id = 4
+		AND bt.dbtype_id = #{dbtype_id}
+	</select>
+
+
+	<select id="getTablesByHost" parameterType="Map" resultType="Map">
+		SELECT
+		bt.table_id,
+		bt.table_name,
+		bt.table_desc,
+		bt.catalog_id,
+		ffv.FLEX_VALUE catalog_value,
+		bt.dbtype_id,
+		bt.source_id,
+		bt.host_id,
+		bt.url,
+		bt.data_count,
+		bt.create_date,
+		bt.create_by,
+		bt.update_date,
+		bt.update_by,
+		bt.data_update_date
+		FROM
+		bd_table AS bt
+		INNER JOIN fnd_flex_values ffv ON bt.catalog_id = ffv.FLEX_VALUE_ID
+		AND ffv.flex_value_set_id = 4
+		AND bt.host_id = #{host_id}
+	</select>
+
+	<select id="getValueByHostAndTable" parameterType="Map" resultType="Map">
+		SELECT
+		  *
+		FROM ${table_name}
+	</select>
+
+
+
+
+
+</mapper>

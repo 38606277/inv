@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="budget">
+
+	<update id="accumulateBudgetAccountAmount" parameterType="java.util.Map" >
+        update ${tableName} t
+           set t.approved_budget_amount = t.approved_budget_amount+
+               (select IFNULL(sum(IFNULL(t1.approved_budget_amount,0)),0)
+                  from (select * from ${tableName}) t1
+                 where t1.budget_account_code like concat(t.budget_account_code,'%')
+                   and CHAR_LENGTH(t1.budget_account_code) = ${budget_account_code_length}
+                   and t1.company_id=t.company_id),
+               t.account_amount = t.account_amount+
+               (select IFNULL(sum(IFNULL(t1.account_amount,0)),0)
+                  from (select * from ${tableName}) t1
+                 where t1.budget_account_code like concat(t.budget_account_code,'%')
+                   and CHAR_LENGTH(t1.budget_account_code) = ${budget_account_code_length}
+                   and t1.company_id=t.company_id),  
+               t.claim_amount = t.claim_amount+
+               (select IFNULL(sum(IFNULL(t1.claim_amount,0)),0)
+                  from (select * from ${tableName}) t1
+                 where t1.budget_account_code like concat(t.budget_account_code,'%')
+                   and CHAR_LENGTH(t1.budget_account_code) = ${budget_account_code_length}
+                   and t1.company_id=t.company_id)
+         where CHAR_LENGTH(t.budget_account_code) = ${parent_budget_account_code_length}
+    </update>
+	<insert id="batchInsertBudgetAccountInfo" parameterType="java.util.Map" >
+	insert into ${tableName}
+			(company_id, company_name, budget_account_name, budget_account_code,
+			transmit_budget_amount,approved_budget_amount,account_amount,claim_amount)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.company_id},#{item.company_name},#{item.budget_account_name},#{item.budget_account_code},
+        #{item.transmit_budget_amount},#{item.approved_budget_amount},#{item.account_amount},#{item.claim_amount})  
+    </foreach>  
+	</insert>
+	<update id="createBudgetAccountTempTable" parameterType="Map" >
+        create table if not exists ${tableName}(
+			id int(5) auto_increment primary key,
+			company_id int(10),
+			company_name varchar(32),
+			budget_account_name varchar(32),
+			budget_account_code varchar(32),
+			transmit_budget_amount decimal(20,2),
+			approved_budget_amount decimal(20,2),
+			account_amount decimal(20,2),
+			claim_amount decimal(20,2)
+		)
+    </update > 
+    <select id="getBudgetAccountDetail" resultType="Map" parameterType="Map">
+    SELECT COMPANY_ID,COMPANY_NAME,BUDGET_ACCOUNT_NAME,BUDGET_ACCOUNT_CODE,
+    TRANSMIT_BUDGET_AMOUNT,APPROVED_BUDGET_AMOUNT,APPROVED_PRO,ACCOUNT_AMOUNT,ACCOUNT_PRO,CLAIM_AMOUNT,BUDGET_PRO
+	 FROM (
+	 SELECT COMPANY_ID,COMPANY_NAME,BUDGET_ACCOUNT_NAME,BUDGET_ACCOUNT_CODE, 
+	           CASE WHEN BUDGET_ACCOUNT_CODE='EBPL010508' THEN 'EBPL010599'
+	           ELSE BUDGET_ACCOUNT_CODE END BUDGET_ACCOUNT_CODE_ORDER,
+	    	   TRANSMIT_BUDGET_AMOUNT,APPROVED_BUDGET_AMOUNT,
+	    	   CONCAT(IF(TRANSMIT_BUDGET_AMOUNT=0,0,truncate(100*APPROVED_BUDGET_AMOUNT/TRANSMIT_BUDGET_AMOUNT,2)),'%') APPROVED_PRO,
+	    	   ACCOUNT_AMOUNT,
+	    	   CONCAT(IF(TRANSMIT_BUDGET_AMOUNT=0,0,truncate(100*ACCOUNT_AMOUNT/TRANSMIT_BUDGET_AMOUNT,2)),'%') ACCOUNT_PRO,
+	    	   CLAIM_AMOUNT,
+	    	   CONCAT(IF(TRANSMIT_BUDGET_AMOUNT=0,0,truncate(100*(ACCOUNT_AMOUNT-CLAIM_AMOUNT)/TRANSMIT_BUDGET_AMOUNT,2)),'%') BUDGET_PRO
+	      FROM ${tableName}) t
+     ORDER BY t.COMPANY_ID,t.BUDGET_ACCOUNT_CODE_ORDER
+    </select>
+    <update id="dropBudgetTable" parameterType="Map">  
+        drop table if exists ${tableName}   
+    </update>
+    <select id="getDicValueByKey" parameterType="String" resultType="String">
+	    SELECT
+	        d_value
+	    FROM
+	        fnd_dictionary
+	    WHERE
+	        1=1
+	    AND d_key=#{key}
+    </select>
+</mapper>

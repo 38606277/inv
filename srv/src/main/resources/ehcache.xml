@@ -1,0 +1,35 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+    updateCheck="true" monitoring="autodetect"
+    dynamicConfig="true">
+
+
+    <defaultCache
+       maxElementsInMemory="1"
+       eternal="false"
+       overflowToDisk="false"
+       timeToIdleSeconds="1800"
+       timeToLiveSeconds="1800">
+    </defaultCache>
+
+    <cache name="data-cache"
+      maxElementsInMemory="500"
+      overflowToDisk="false"
+      eternal="true"
+      timeToIdleSeconds="18000"
+      timeToLiveSeconds="18000"
+      memoryStoreEvictionPolicy="LRU"
+      transactionalMode="off" />
+
+            <!-- 预算报表平台 mybatis 执行的缓存存放处 -->
+    <cache name="mybatis-ys-cache"
+           maxElementsInMemory="500"
+           overflowToDisk="false"
+           eternal="true"
+           timeToIdleSeconds="18000"
+           timeToLiveSeconds="18000"
+           memoryStoreEvictionPolicy="LRU"
+           transactionalMode="off">
+      <searchable keys="true"/> <!--可以根据Key进行查询，查询的Attribute就是keys-->
+    </cache>
+</ehcache>

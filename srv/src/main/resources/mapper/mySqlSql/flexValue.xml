@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="flexValue">
+
+
+
+    <select id="getFlexValuesTree" parameterType="Map" resultType="root.fnd.entity.TreeNode">
+        SELECT
+            fnd_flex_values.FLEX_VALUE_ID AS id,
+            fnd_flex_values.FLEX_VALUE_PID AS pid,
+            fnd_flex_values.FLEX_VALUE AS `value`,
+            fnd_flex_values.FLEX_VALUE_NAME AS `name`
+        FROM
+            fnd_flex_values
+        WHERE
+             fnd_flex_values.FLEX_VALUE_SET_ID = ${FLEX_VALUE_SET_ID}
+    </select>
+
+    <select id="get" parameterType="Map" resultType="Map">
+        select * from m_student;
+    </select>
+
+
+
+
+
+</mapper>

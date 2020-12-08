@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="budget">
+    <select id="getBudgetAccountCode" resultType="Map">
+   WITH
+    tb
+    (
+        BUDGET_ACCOUNT_ID,
+        PARENT_BUDGET_ACCOUNT_ID,
+        BUDGET_ACCOUNT_CODE,
+        BUDGET_ACCOUNT_NAME
+    ) AS
+    (
+        SELECT
+            TBA.BUDGET_ACCOUNT_ID,
+            TBA.PARENT_BUDGET_ACCOUNT_ID,
+            TBA.BUDGET_ACCOUNT_CODE,
+            TBA.BUDGET_ACCOUNT_NAME
+        FROM
+            TBM_TEMPLATES TT
+        LEFT JOIN
+            TBM_TEMPLATE_LAYOUTS TTL
+        ON
+            TT.TEMPLATE_ID=TTL.TEMPLATE_ID
+        LEFT JOIN
+            TBM_TEMPLATE_ROW_SETS TTRS
+        ON
+            TTL.TEMPLATE_ROW_SET_ID=TTRS.TEMPLATE_ROW_SET_ID
+        LEFT JOIN
+            TBM_TEMPLATE_ROWS TTR
+        ON
+            TTRS.TEMPLATE_ROW_SET_ID=TTR.TEMPLATE_ROW_SET_ID
+        LEFT JOIN
+            TBM_BUDGET_ACCOUNTS TBA
+        ON
+            TTR.DIMENSION_VALUE_ID=TBA.BUDGET_ACCOUNT_ID
+        AND TTRS.BUDGET_ACCOUNT_SET_ID=TBA.BUDGET_ACCOUNT_SET_ID
+        LEFT JOIN
+            TBM_PROPERTIES_SET_VALUE TPSV
+        ON
+            TPSV.PROPERTY_SET_VALUE=TT.TEMPLATE_NUMBER
+        WHERE
+            TPSV.PROPERTY_SET_VALUE_CODE ='HB_CURRENT_TEMPLATE_NUMBER'
+        AND TBA.BUDGET_ACCOUNT_CODE='EBPL01'
+        AND TBA.ENABLED_FLAG='Y'
+        AND TBA.BUDGET_ACCOUNT_CODE != 'EBPL0198'
+        AND TBA.BUDGET_ACCOUNT_CODE != 'EBPL0199'
+        AND TBA.BUDGET_ACCOUNT_CODE != 'EBPL0197'
+        UNION ALL
+        SELECT
+            CHILD.BUDGET_ACCOUNT_ID,
+            CHILD.PARENT_BUDGET_ACCOUNT_ID,
+            CHILD.BUDGET_ACCOUNT_CODE,
+            CHILD.BUDGET_ACCOUNT_NAME
+        FROM
+            tb PARENT ,
+            ( SELECT
+            TBA.BUDGET_ACCOUNT_ID,
+            TBA.PARENT_BUDGET_ACCOUNT_ID,
+            TBA.BUDGET_ACCOUNT_CODE,
+            TBA.BUDGET_ACCOUNT_NAME
+        FROM
+            TBM_TEMPLATES TT
+        LEFT JOIN
+            TBM_TEMPLATE_LAYOUTS TTL
+        ON
+            TT.TEMPLATE_ID=TTL.TEMPLATE_ID
+        LEFT JOIN
+            TBM_TEMPLATE_ROW_SETS TTRS
+        ON
+            TTL.TEMPLATE_ROW_SET_ID=TTRS.TEMPLATE_ROW_SET_ID
+        LEFT JOIN
+            TBM_TEMPLATE_ROWS TTR
+        ON
+            TTRS.TEMPLATE_ROW_SET_ID=TTR.TEMPLATE_ROW_SET_ID
+        LEFT JOIN
+            TBM_BUDGET_ACCOUNTS TBA
+        ON
+            TTR.DIMENSION_VALUE_ID=TBA.BUDGET_ACCOUNT_ID
+        AND TTRS.BUDGET_ACCOUNT_SET_ID=TBA.BUDGET_ACCOUNT_SET_ID
+        LEFT JOIN
+            TBM_PROPERTIES_SET_VALUE TPSV
+        ON
+            TPSV.PROPERTY_SET_VALUE=TT.TEMPLATE_NUMBER
+        WHERE
+            TPSV.PROPERTY_SET_VALUE_CODE ='HB_CURRENT_TEMPLATE_NUMBER'
+        ) CHILD
+        WHERE
+            CHILD.PARENT_BUDGET_ACCOUNT_ID=PARENT.BUDGET_ACCOUNT_ID
+    )
+	SELECT BUDGET_ACCOUNT_NAME,
+	       BUDGET_ACCOUNT_CODE
+	  FROM tb
+    </select>
+    <select id="getKindItem" resultType="Map" parameterType="Map">
+   SELECT DETAIL,REMARK
+	 FROM ARCH_DIC_ITEM
+	WHERE KIND='USERACCOUNT_COMPANYID'
+	  AND CODE=lower('${userName}')
+	  AND FLAG='Y'
+	  FETCH
+	    FIRST 1 rows only
+    </select>
+    <select id="getUserPermission" parameterType="Map" resultType="String">
+    SELECT
+	    ar.CUST_TEXT09
+	FROM
+	    arch_user au
+	INNER JOIN
+	    ARCH_USER_ROLE aur
+	ON
+	    au.USER_ID=aur.USER_ID
+	INNER JOIN
+	    ARCH_ROLE ar
+	ON
+	    aur.ROLE_ID=ar.ROLE_ID
+	WHERE
+	    au.ACCOUNT=lower('${userName}')
+	ORDER BY
+	    ar.cust_number01
+	FETCH
+	    FIRST 1 rows only
+    </select>
+    <select id="getUserCompany" resultType="Map" parameterType="String">
+        select
+                CASE tc.COMPANY_CODE
+                WHEN '3511'
+                THEN '3510'
+                WHEN '35'
+                THEN '3510'
+                WHEN '75'
+                THEN '3510'
+                ELSE tc.COMPANY_CODE
+                END AS COMPANY_CODE,
+                tc.COMPANY_NAME
+         FROM arch_org_ext aoe,tbm_companies tc
+        WHERE aoe.COMPANY_ID=tc.COMPANY_ID
+          AND aoe.org_code=#{org_code}
+    </select>
+    <select id="getCompanyCodeById" parameterType="Map" resultType="String">
+    SELECT COMPANY_CODE
+      FROM tbm_companies tc
+     WHERE COMPANY_ID=${company_id}
+    </select>
+    <select id="getKeyValue" parameterType="String" resultType="String">
+    SELECT
+	    PROPERTY_SET_VALUE
+	FROM
+	    TBM_PROPERTIES_SET_VALUE
+	WHERE
+	    1=1
+	AND PROPERTY_SET_VALUE_CODE=#{key}
+	ORDER BY
+	    LAST_UPDATE_DATE DESC
+	FETCH
+	    FIRST 1 rows only
+    </select>
+    <select id="getCompanyById" parameterType="Map" resultType="Map">
+    SELECT COMPANY_CODE,COMPANY_NAME
+      FROM tbm_companies tc
+     WHERE COMPANY_ID=${company_id}
+    </select>
+    <select id="getCompanyByCode" parameterType="Map" resultType="Map">
+        SELECT COMPANY_CODE,COMPANY_NAME
+        FROM tbm_companies tc
+        WHERE COMPANY_CODE=#{company_code}
+    </select>
+    <select id="getDepartmentInfo" resultType="Map" parameterType="String">
+    SELECT org_ext_id value,org_name name
+      FROM arch_org_ext
+     WHERE org_code=#{org_id}
+    </select>
+    <select id="getArchUserName" resultType="Map" parameterType="Map">
+    SELECT user_name userName FROM ARCH_USER
+    where account=#{userName}
+    </select>
+    <select id="getCount" resultType="int" parameterType="string">
+    SELECT count(*)
+      FROM tbm_budget_complete_status_data d
+      WHERE d.PERIOD_NAME = #{period_name}
+    </select>
+    <select id="getDepartmentInfoByRole" resultType="Map" parameterType="Map">
+    select distinct aoe.org_ext_id value,aoe.org_name name
+      from arch_user au,ARCH_USER_ROLE aur,arch_org_ext aoe
+     where au.user_id=aur.user_id
+       and aur.org_id=aoe.org_id
+       and aoe.company_id=(select company_id from arch_org_ext where org_code=#{org_code})
+       and au.account=lower('${userName}')
+    </select>
+</mapper>

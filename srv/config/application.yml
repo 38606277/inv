@@ -1,0 +1,19 @@
+server:
+  port: 80
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+webapp:
+  title: 大数据管理平台
+management:
+   endpoint:
+     beans:
+       enabled: true
+     web:
+       exposure:
+         include:*
+     shutdown:
+       enabled: true

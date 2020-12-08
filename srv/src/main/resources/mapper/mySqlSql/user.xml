@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+	<select id="getUserByCode" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT u.user_id FROM fnd_user u where u.user_name = #{userCode}
+    </select>
+    <select id="getAllUser" resultType="Map" parameterType="Map">
+        SELECT u.user_id,u.user_name 
+        FROM fnd_user u 
+        where u.user_name like '%${userName}%' 
+        limit #{startIndex},#{perPage}
+    </select>
+    <select id="getUserListRows" resultType="int" parameterType="Map">
+        select count(1) from fnd_user u where u.user_name like '%${userName}%'
+    </select>
+    <select id="isAdmin" resultType="int" parameterType="java.lang.String">
+        SELECT u.ISADMIN 
+        FROM fnd_user u 
+        where u.user_name = #{userCode}
+    </select>
+    <select id="qryMenuList" resultType="Map" parameterType="Map">
+    SELECT f.func_id,f.func_name
+	  from fnd_auth a ,fnd_user u ,fnd_func f
+	 where a.user_id = u.USER_ID 
+	   and a.func_id = f.func_id
+	   and u.USER_NAME = #{userName} 
+	   and a.auth_type = 'webFunc'
+	   and f.func_pid = 0
+	</select>
+	<select id="qryBudgetReportMenu" resultType="Map" parameterType="Map">
+    SELECT f.func_id,f.func_pid,f.func_name
+	  from fnd_auth a ,fnd_user u ,fnd_func f
+	 where a.user_id = u.USER_ID 
+	   and a.func_id = f.func_id
+	   and u.USER_NAME = #{userName} 
+	   and a.auth_type = 'webFunc'
+	   and f.valid=1
+	 order by f.func_id asc,f.func_pid asc
+	</select>
+	<select id="qryAllBudgetReportMenu" resultType="Map" parameterType="Map">
+    SELECT f.func_id,f.func_pid,f.func_name
+	  from fnd_func f
+	 where f.func_pid!=0
+	   and f.func_type='web'
+	   and f.valid=1
+	 order by f.func_id asc,f.func_pid asc
+	</select>
+</mapper>

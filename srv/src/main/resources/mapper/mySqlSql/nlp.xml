@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nlp">
+
+    <!-- 让此SQL能返回自增长主键 -->
+    <insert id="createQueryTable" parameterType="Map"  useGeneratedKeys="true" keyProperty="table_id">
+        INSERT INTO qry_table(table_db,`table_name`,table_nlp1,table_nlp2,table_nlp3,table_nlp4)
+        VALUES ( '${table_db}',
+        <if  test="table_name == null">NULL</if>
+        <if  test="table_name != null">'${table_name}'</if>
+        ,
+        <if  test="table_nlp1 == null">NULL</if>
+        <if  test="table_nlp1 != null">'${table_nlp1}'</if>
+        ,
+        <if  test="table_nlp2 == null">NULL</if>
+        <if  test="table_nlp2 != null">'${table_nlp2}'</if>
+        ,
+        <if  test="table_nlp3 == null">NULL</if>
+        <if  test="table_nlp3 != null">'${table_nlp3}'</if>
+        ,
+        <if  test="table_nlp4 == null">NULL</if>
+        <if  test="table_nlp4 != null">'${table_nlp4}'</if>
+        )
+    </insert>
+
+    <!-- 让此SQL能返回自增长主键 -->
+    <insert id="createQueryTableField" parameterType="Map" >
+        INSERT INTO qry_table_field(table_id,field_name,field_nlp1,field_nlp2,field_nlp3,field_nlp4,`type`,`length`,not_null,`key`,
+        reference_table_id,reference_fields)
+        VALUES ('${table_id}', '${field_name}',
+        <if  test="field_nlp1 == null">NULL</if>
+        <if  test="field_nlp1 != null">'${field_nlp1}'</if>
+        ,
+        <if  test="field_nlp2 == null">NULL</if>
+        <if  test="field_nlp2 != null">'${field_nlp2}'</if>
+        ,
+        <if  test="field_nlp3 == null">NULL</if>
+        <if  test="field_nlp3 != null">'${field_nlp3}'</if>
+        ,
+        <if  test="field_nlp4 == null">NULL</if>
+        <if  test="field_nlp4 != null">'${field_nlp4}'</if>
+        ,
+        <if  test="type == null">NULL</if>
+        <if  test="type != null">'${type}'</if>
+        ,
+        <if  test="length == null">NULL</if>
+        <if  test="length != null">'${length}'</if>
+        ,
+        <if  test="not_null == null">NULL</if>
+        <if  test="not_null != null">'${not_null}'</if>
+        ,
+        <if  test="key == null">NULL</if>
+        <if  test="key != null">'${key}'</if>
+        ,
+        <if  test="reference_table_id == null">NULL</if>
+        <if  test="reference_table_id != null">'${reference_table_id}'</if>
+        ,
+        <if  test="reference_fields == null">NULL</if>
+        <if  test="reference_fields != null">'${reference_fields}'</if>
+        )
+    </insert>
+
+    <select id="getAll" parameterType="Map" resultType="Map">
+        SELECT    *    FROM   qry_table t    WHERE  1=1
+        <if  test="table_db != null and table_db!=''"> and table_db like '%${table_db}%'</if>
+        <if  test="table_name != null and table_name!=''"> and `table_name` like '%${table_name}%'</if>
+    </select>
+
+    <select id="getqryTable" parameterType="Map" resultType="Map">
+        SELECT    *    FROM   qry_table t    WHERE    t.table_id ='${table_id}'
+    </select>
+    <select id="getqryTableFiled" parameterType="Map" resultType="Map">
+        SELECT    *    FROM   qry_table_field  t    WHERE    t.table_id ='${table_id}'
+        <if  test="field_name != null"> and t.field_name='${field_name}'</if>
+    </select>
+    <select id="selectQryTable" parameterType="Map" resultType="map">
+        SELECT    *  from qry_table where table_db='${table_db}'
+        <if  test="table_name != null"> and `table_name`='${table_name}'</if>
+    </select>
+    <delete id="deleteQryTable" parameterType="Map">
+        delete from qry_table where table_db='${table_db}' and `table_name`='${table_name}'
+    </delete>
+    <delete id="deleteQryTableID" parameterType="Map">
+        delete from qry_table where  table_id='${table_id}'
+    </delete>
+    <!--查询函数输出参数表-->
+    <delete id="deleteQryTableFiled" parameterType="Map">
+        delete from qry_table_field where table_id='${table_id}'
+    </delete>
+
+    <select id="getDictByValue" parameterType="Map" resultType="Map">
+        SELECT
+        fdv.dict_id,fdv_dict_name
+        FROM
+        func_dict_value fdv
+        WHERE
+        fdv.value_name LIKE '%${value_name}%'
+        GROUP BY
+        fdv.dict_id
+    </select>
+    <!-- 根据输出字段查询对应的查询ID和名称 -->
+    <select id="getQryByOutName" resultType="Map" parameterType="map">
+        SELECT
+            qo.qry_id ,
+            qn.qry_name ,
+            qo.out_name,
+            class_id
+        FROM
+            qry_out qo ,
+            qry_name qn
+        WHERE
+            qo.qry_id = qn.qry_id
+        AND qo.out_name = '${out_name}'
+    </select>
+
+    <!-- 根据输出字段查询对应的查询ID和名称 -->
+    <select id="getQryByQryName" resultType="Map" parameterType="map">
+        select
+            qry_id,
+            qry_name,
+            class_id
+        from
+            qry_name
+        where  1=1
+        <if test="qry_name != null and qry_name!=''">
+            and qry_name like '%${qry_name}%'
+        </if>
+    </select>
+
+    <!-- nlp查找输出字段  -->
+    <select id="getQryNameAndOutName" resultType="Map" parameterType="map">
+        SELECT
+          substring_index(qry_name, '查询', -1) qry_name
+        FROM
+          qry_name
+        UNION
+          SELECT
+          out_name
+        FROM
+         qry_out
+    </select>
+
+    <!-- nlp查找输出字段  -->
+    <select id="getDictValueName" resultType="Map" parameterType="map">
+        SELECT DISTINCT
+          value_name
+        FROM
+          func_dict_value fdv
+        WHERE
+           fdv.value_name IS NOT NULL
+        UNION
+        SELECT DISTINCT
+        fdv1.abbr_name1
+        FROM
+        func_dict_value fdv1
+        WHERE
+        fdv1.abbr_name1 IS NOT NULL
+        UNION
+        SELECT DISTINCT
+        fdv2.abbr_name2
+        FROM
+        func_dict_value fdv2
+        WHERE
+        fdv2.abbr_name2 IS NOT NULL
+    </select>
+    <!-- nlp查找名词所属字典  -->
+    <select id="getDictIdByValue" parameterType="Map" resultType="Map">
+        SELECT
+        fdv.dict_id dict_id
+        FROM
+        func_dict_value fdv
+        WHERE
+        fdv.value_name LIKE '%${value_name}%'
+        GROUP BY
+        fdv.dict_id
+    </select>
+
+</mapper>

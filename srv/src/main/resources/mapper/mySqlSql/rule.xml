@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rule">
+    <select id="getSelectClassByUserName" resultType="Map" parameterType="Map">
+        SELECT a.auth_id as authId,a.auth_type as authType,a.func_id as funcId,a.user_id as userId,u.USER_NAME as userName,f.func_name as funcName,f.func_type as funcType,f.func_pid as funcPid
+        from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        LEFT JOIN fnd_func f on a.func_id = f.func_id
+        where u.USER_NAME = #{userName} and f.func_type =#{type} and f.func_pid =#{pid}
+    </select>
+    <select id="getAuthByConditions" resultType="Map" parameterType="Map">
+        SELECT a.auth_id as authId,a.auth_type as authType,a.func_id as funcId,a.user_id as userId,u.USER_NAME as userName,f.func_name as funcName,f.func_type as funcType
+		from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+		LEFT JOIN fnd_func f on a.func_id = f.func_id
+		where u.USER_NAME = #{userName} and a.auth_type =#{type}
+    </select>
+    <select id="getAuthListByConditions" resultType="Map" parameterType="Map">
+        SELECT a.auth_id as authId,a.auth_type as authType,a.func_id as funcId,a.user_id as userId,u.USER_NAME as userName
+		from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+		where u.USER_NAME = #{userName} and a.auth_type =#{type}
+    </select>
+    <select id="getSelectAuthList" resultType="Map" parameterType="Map">
+        select a.func_id as name from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        where u.USER_NAME = #{userName} and locate('/',a.func_id)=0 and a.auth_type = 'select'
+    </select>
+    <select id="getSelectAuthListByClass" resultType="Map" parameterType="Map">
+        select a.func_id as name from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        where u.USER_NAME = #{userName} and locate('${className}/',a.func_id)>0 and a.auth_type = 'select'
+    </select>
+    <select id="getTemplateAuthList" resultType="Map" parameterType="Map">
+        select a.func_id as name from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        where u.USER_NAME = #{userName} and a.auth_type = 'template' ORDER BY a.func_id
+    </select>
+    <select id="getAuthByFuncType" resultType="Map" parameterType="Map">
+        SELECT a.auth_id as authId,a.auth_type as authType,a.func_id as funcId,a.user_id as userId,u.USER_NAME as userName,f.func_name as funcName,f.func_type as funcType,f.func_pid as funcPid
+        from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        LEFT JOIN fnd_func f on a.func_id = f.func_id
+        where u.USER_NAME = #{userName} and f.func_type =#{type}
+    </select>
+    <select id="getFuncRuleList" resultType="Map" parameterType="Map">
+        SELECT a.auth_id as authId,a.auth_type as authType,a.func_id as funcId,a.user_id as userId,u.USER_NAME as userName,f.func_name as funcName,f.func_type as funcType,f.func_pid as funcPid
+        from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        LEFT JOIN fnd_func f on a.func_id = f.func_id
+        where u.USER_NAME = #{userName} and f.func_type =#{type} and f.func_pid =#{pid}
+    </select>
+    <select id="getFunctionAuthList" resultType="Map" parameterType="Map">
+        select a.func_id as name from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        where u.USER_NAME = #{userName} and locate('/',a.func_id)=0 and a.auth_type = 'function'
+    </select>
+    <select id="getFunctionAuthListByClass" resultType="Map" parameterType="Map">
+        select a.func_id as name from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        where u.USER_NAME = #{userName} and locate('${className}/',a.func_id)>0 and a.auth_type = 'function'
+    </select>
+    <select id="getExcelRuleList" resultType="Map" parameterType="Map">
+        select f.func_name as funcName,f.func_id as funcId from fnd_func f where f.func_type = #{type} and f.func_pid = #{pid}
+    </select>
+    <select id="getDataAuthList" resultType="Map" parameterType="Map">
+        select a.func_id as name from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID 
+        where u.USER_NAME = #{userName} and a.auth_type = 'data' ORDER BY a.func_id
+    </select>
+    <select id="getDepartmentList" resultType="Map" parameterType="Map">
+        select o.ORG_EXT_ID as value,o.ORG_NAME as name,o.PARENT_ORG_EXT_ID as parentId from arch_org_ext o
+        where o.PARENT_ORG_EXT_ID=#{parentId};
+    </select>
+    <select id="getDepartmentListByCid" resultType="Map" parameterType="Map">
+        select e.ORG_EXT_ID as value,e.ORG_NAME as name from arch_org_ext e,tbm_companies c 
+		where e.COMPANY_ID=c.COMPANY_ID
+		and c.COMPANY_CODE = #{companyCode}
+    </select>
+    <insert id="addRules" parameterType="Map" useGeneratedKeys="true" keyProperty="auth_id">
+        insert into fnd_auth(auth_type, func_id, user_id) values(#{type}, (select func_id from fnd_func where func_name = #{funcName}), (select USER_ID from fnd_user where USER_NAME = #{userName}))
+    </insert>
+    <insert id="addAuthRules" parameterType="Map" useGeneratedKeys="true" keyProperty="auth_id">
+        insert into fnd_auth(auth_type, func_id, user_id) values(#{type}, #{funcName}, (select USER_ID from fnd_user where USER_NAME = #{userName}))
+    </insert>
+    <delete id="deleteRules" parameterType="Map">  
+        delete from fnd_auth 
+		where user_id = (select USER_ID from fnd_user where USER_NAME = #{userName})
+		and auth_type = #{type}
+    </delete>  
+</mapper>

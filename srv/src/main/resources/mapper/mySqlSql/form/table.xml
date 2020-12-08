@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="table">
+
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="getAll" resultType="Map">
+        SELECT t.table_id as id,t.table_name as name FROM frm_table t
+	</select>
+
+	<select id="getAllTable" resultType="Map">
+        SELECT d.table_id as id,d.table_name as name FROM rpt_datatable d
+    </select>
+
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="getCols" parameterType="java.lang.String" resultType="Map">
+        SELECT d.column_name as name FROM frm_table_define d where d.table_id = #{pTableId}
+	</select>
+
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="getTableById" parameterType="java.lang.String" resultType="Map">
+        SELECT t.table_name as t_name,t.table_desc as t_desc FROM frm_table t where t.table_id = #{tableId}
+	</select>
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="getTableByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT count(*) FROM frm_table t where t.table_name = #{name}
+	</select>
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="getTableColumnsById" parameterType="java.lang.String" resultType="Map">
+        select d.column_name as name,d.column_desc as c_desc,d.data_type as type,d.isnull from frm_table_define d where d.table_id = #{tableId}
+	</select>
+
+
+	<insert id="addDataTable" parameterType="Map" useGeneratedKeys="true" keyProperty="table_id">
+	  	insert into frm_table(table_name, table_desc) values(#{name}, #{desc})
+	</insert>
+	<insert id="addDataTableDefine" parameterType="Map" useGeneratedKeys="true" >
+	  	insert into frm_table_define(table_id,column_name, column_desc, data_type, isnull) values(#{id},#{name}, #{desc}, #{type}, #{isnull})
+	</insert>
+
+	<update id="updateDataTable"  parameterType="Map">
+		 update frm_table
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name!=null">table_name=#{name},</if>
+			<if test="desc!=null">table_desc=#{desc},</if>
+		</trim>
+		  where table_id=#{id}
+	</update>
+
+	<update id="updateDataTableDefine"  parameterType="Map">
+		 update frm_table_define
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name!=null">column_name=#{name},</if>
+			<if test="desc!=null">column_desc=#{desc},</if>
+			<if test="type!=null">data_type=#{type},</if>
+			<if test="isnull!=null">isnull=#{isnull},</if>
+		</trim>
+		  where table_id=#{id} and id = #{columnId}
+	</update>
+
+	<delete id="deleteDataTable" parameterType="java.lang.String">
+        delete from frm_table where table_id = #{id}
+	</delete>
+	<delete id="deleteDataTableDefine" parameterType="java.lang.String">
+        delete from frm_table_define where table_id = #{id}
+	</delete>
+
+	<select id="getAllFormTable" resultType="Map">
+         select r.table_id as TABLE_ID,r.table_name as TABLE_NAME,r.db as TABLE_DB from fnd_auth a LEFT JOIN fnd_user u on a.user_id = u.USER_ID left join rpt_datatable r on r.table_id=a.func_id
+        where u.USER_NAME = #{userName} and locate('/',a.func_id)=0 and a.auth_type = 'table'
+	</select>
+	<select id="getDataFromFormTableName" parameterType="map" statementType="STATEMENT" resultType="java.util.LinkedHashMap">
+        SELECT * FROM  ${tableName}
+	</select>
+	<delete id="DeleteTable" parameterType="map" statementType="STATEMENT" >
+        Delete  FROM  ${tableName}
+	</delete>
+	<select id="GetTableSchema" parameterType="map" statementType="STATEMENT"  resultType="java.util.LinkedHashMap">
+        SELECT COLUMN_NAME,DATA_TYPE,replace(COLUMN_KEY,'PRI',0) as COLUMN_KEY FROM information_schema.COLUMNS WHERE table_name = '${tableName}' AND table_schema = 'form';
+	</select>
+	<!--<select id="GetTableSchema" parameterType="map" statementType="STATEMENT"  resultType="java.util.LinkedHashMap">-->
+		<!--select tmp2.COLUMN_NAME,tmp2.DATA_TYPE, nvl(tmp.pri,1) COLUMN_KEY from-->
+		<!--(select a.table_name,a.column_name COLUMN_NAME, a.data_type DATA_TYPE,rownum r-->
+		<!--from user_tab_cols a where a.table_name=upper('${tableName}')) tmp2-->
+		<!--left join (select a.table_name, b.column_name, 0 pri-->
+		<!--from user_constraints a, user_cons_columns b-->
+		<!--where a.constraint_name = b.constraint_name-->
+		<!--and a.constraint_type = 'P'-->
+		<!--and a.table_name = upper('${tableName}')) tmp-->
+		<!--on tmp2.TABLE_NAME = tmp.table_name-->
+		<!--and tmp2.column_name = tmp.column_name-->
+		<!--order by tmp2.r-->
+	<!--</select>-->
+	<insert id="insertDBEntityBatch" parameterType="root.form.datatable.TableEntitySql">
+			insert into <if test="database!=null">${database}.</if>${tableName}
+				<foreach collection="cols" item="eachCol" separator="," open="(" close=")">
+                        ${eachCol.dbColName}
+				</foreach>
+				values
+				<foreach collection="cols" item="eachColumn" separator="," open="(" close=")" >
+				<choose>
+					<when test="eachColumn.value==null and  eachColumn.operateIfNull!=null">
+                        ${eachColumn.operateIfNull}
+					</when>
+					<otherwise>
+                        #{eachColumn.value}
+					</otherwise>
+				</choose>
+			</foreach>
+	</insert>
+
+	<delete id="removeDBEntityBatch" parameterType="java.util.List">
+		<foreach collection="list" item="eachInfo" index="index" separator=",">
+		   <if test=" index == 0 ">
+			 delete from <if test="eachInfo.database!=null">${eachInfo.database}.</if>${eachInfo.tableName}
+                           where
+                           ${eachInfo.keyName} in (
+           </if>
+			<foreach collection="eachInfo.cols" item="eachColumn" separator="," >
+				<if test="eachInfo.keyName == eachColumn.dbColName">
+                           #{eachColumn.value}
+				</if>
+			</foreach>
+		</foreach>
+		     )
+	</delete>
+
+	<update id="modifyDBEntityBatch" parameterType="root.form.datatable.TableEntitySql">
+			update  <if test="database!=null">${database}.</if>${tableName}
+                           set
+			<foreach collection="cols" item="eachCol" separator="," >
+			       <if test="keyName != eachCol.dbColName">
+			       	  `${eachCol.dbColName}`  = #{eachCol.value}
+			       </if>
+			</foreach>
+                       where
+                       `${keyName}` =
+			<foreach collection="cols" item="eachColumn"  >
+				<if test="keyName == eachColumn.dbColName">
+                            #{eachColumn.value}
+				</if>
+			</foreach>
+	</update>
+	<select id="execIntroductionSQL" parameterType="Map" resultType="Map">  
+    	${sqltest}
+	</select>   
+</mapper>

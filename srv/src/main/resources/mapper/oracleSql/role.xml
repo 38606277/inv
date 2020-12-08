@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="role">
+	
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectUser" resultType="map">
+		select * from user_test 
+	</select>
+	
+	<!-- 新增，parameterType参数类型，可以是java基本对象，可以是对象，#{}表示取对应的参数 -->
+	<insert id="insertUser" parameterType="map">
+		insert into user_test(id, name, sex) values(#{id}, #{name}, #{sex})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateUser" parameterType="map">
+	 	update user_test set sex = #{sex} where id = #{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="deleteUser" parameterType="int">
+		delete from user_test where id = #{id}
+	</delete>
+	
+	<select id="loginUser" parameterType="map" resultType="map">
+			select fnd_web_sec.validate_login(#{userCode},#{pwd}) as loginResult from dual
+	</select>
+</mapper>

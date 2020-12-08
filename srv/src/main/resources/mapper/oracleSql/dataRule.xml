@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="dataRule">
+    <cache/>
+	<select id="getDataList" resultType="Map">
+        <!-- select ffv.flex_value as value,
+       ffvt.description as name
+         from fnd_id_flex_segments fifs,
+               gl_sets_of_books     gsob,
+               fnd_flex_values      ffv,
+               fnd_flex_values_tl   ffvt
+         where gsob.chart_of_accounts_id = fifs.id_flex_num
+           and id_flex_code = 'GL#'
+           and ffv.flex_value_id = ffvt.flex_value_id
+           and ffvt.language = 'ZHS'
+           and ffv.flex_value_set_id = fifs.flex_value_set_id
+           and ffv.enabled_flag = 'Y'
+           and ffv.end_date_active is null
+           and gsob.set_of_books_id = 2
+           and fifs.application_column_name = 'SEGMENT' || '1' -->
+       <![CDATA[
+       select ffv.flex_value as value,
+		       ffvt.description as name
+		 from fnd_id_flex_segments fifs,
+		       gl_sets_of_books     gsob,
+		       fnd_flex_values      ffv,
+		       fnd_flex_values_tl   ffvt
+		 where gsob.chart_of_accounts_id = fifs.id_flex_num
+		   and id_flex_code = 'GL#'
+		   and ffv.flex_value_id = ffvt.flex_value_id
+		   and ffvt.language = 'ZHS'
+		   and ffv.flex_value_set_id = fifs.flex_value_set_id
+		   and ffv.enabled_flag = 'Y'
+		   and ffv.end_date_active is null
+		   and gsob.set_of_books_id = 1
+		   and fifs.application_column_name = 'SEGMENT' || '1'
+		 order by ffv.flex_value
+		 ]]>
+    </select>
+</mapper>

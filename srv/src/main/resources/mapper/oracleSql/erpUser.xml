@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="erpUser">
+	<resultMap type="root.form.user.UserModel" id="userModel">
+	   <result column="_ID" property="id" javaType="int" jdbcType="VARCHAR"></result>
+	   <result column="USER_ID" property="userId" javaType="string" jdbcType="VARCHAR"></result>
+	   <result column="USER_NAME" property="userName" javaType="string" jdbcType="VARCHAR"></result>
+	   <result column="CREATION_DATE" property="creationDate" javaType="string" jdbcType="VARCHAR"></result>
+	   <result column="START_DATE" property="startDate" javaType="string" jdbcType="VARCHAR"></result>
+	   <result column="END_DATE" property="endDate" javaType="string" jdbcType="VARCHAR"></result>
+	   <result column="DESCRIPTION" property="description" javaType="string" jdbcType="VARCHAR"></result>
+	   <result column="ENCRYPTED_USER_PASSWORD" property="encryptPwd" javaType="string" jdbcType="VARCHAR"></result>
+	</resultMap>
+	<select id="getErpUserListTotalRows" resultType="int" parameterType="map">
+        select count(1) 
+          from fnd_user t
+         where t.user_name like '%${userName}%'
+    </select>
+	<select id="getErpUserList" resultMap="userModel" parameterType="map">
+	<![CDATA[
+	select t.user_name,t.creation_date,t.start_date,t.end_date,t.description
+	  from (
+        select t.user_name,t.creation_date,t.start_date,t.end_date,t.description,rownum num
+          from fnd_user t 
+         where t.user_name like '%${userName}%'
+           and rownum<=#{endIndex}) t
+     where t.num>=#{startIndex}
+     ]]>
+    </select>
+   
+</mapper>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dict">
+
+    <select id="getAllDictName" parameterType="Map" resultType="Map">
+        SELECT
+            fd.dict_id ,
+            fd.dict_name,
+            fd.dict_desc
+        FROM
+            func_dict fd
+    </select>
+
+    <select id="getDictValueByID" parameterType="Map" resultType="Map">
+        SELECT
+          fdv.dict_id ,
+          fdv.value_code,
+          fdv.value_name,
+          fdv.abbr_name1,
+          fdv.abbr_name2
+        FROM
+          func_dict_value fdv
+        where
+        fdv.dict_id=#{dict_id,jdbcType=INTEGER}
+        <if  test="value_name != null and value_name!=''"> and  fdv.value_name LIKE '%${value_name}%'</if>
+    </select>
+
+    <select id="getDictByValue" parameterType="Map" resultType="Map">
+        SELECT
+        fdv.dict_id ,
+        fd.dict_name
+        FROM
+        func_dict_value fdv,
+        func_dict fd
+        WHERE
+        fdv.dict_id = fd.dict_id
+        AND fdv.value_name LIKE '%${value_name}%'
+        GROUP BY
+        fdv.dict_id ,
+        fd.dict_name
+    </select>
+    <!--  创建func_dict信息  -->
+    <insert id="createFuncDict" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+        insert into func_dict(dict_name,dict_desc,dict_db,loaddata_mode,loaddata_state,dict_sql)
+        values ('${dict_name}','${dict_desc}','${dict_db}',
+        <if  test="loaddata_mode == null">NULL</if>
+        <if  test="loaddata_mode != null">'${loaddata_mode}'</if>,
+        <if  test="loaddata_state == null">NULL</if>
+        <if  test="loaddata_state != null">'${loaddata_state}'</if>,
+        <if  test="dict_sql == null">NULL</if>
+        <if  test="dict_sql != null">'${dict_sql}'</if>
+        )
+    </insert>
+
+    <!-- 创建func_dict_out 信息 -->
+    <insert id="createFuncDictOut" parameterType="Map">
+        insert into func_dict_out(dict_id,out_id,out_name,datatype)
+        values (#{dict_id,jdbcType=INTEGER},'${out_id}',
+        <if  test="out_name == null">NULL</if>
+        <if  test="out_name != null">'${out_name}'</if>,
+        <if  test="datatype == null">NULL</if>
+        <if  test="datatype != null">'${datatype}'</if>
+        )
+    </insert>
+
+    <!-- 根据 dict_id 删除 func_dict 表的信息 -->
+    <delete id="deleteFuncDict" parameterType="int">
+        delete from func_dict where dict_id=#{dict_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 根据dict_id 跟 dict_out_id 删除func_dict_out 表相关信息  -->
+    <delete id="deleteFuncDictOut" parameterType="Map">
+        delete from func_dict_out where dict_id=#{dict_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 根据dict_id 跟 dict_out_id 删除func_dict_out 表相关信息  -->
+    <delete id="deleteDictValueByDictID" parameterType="int">
+        delete from func_dict_value where dict_id=#{dict_id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 修改 func_dict 表的信息 -->
+    <update id="updateFuncDict" parameterType="Map">
+		update func_dict set dict_name='${dict_name}',dict_desc='${dict_desc}',
+		dict_db='${dict_db}',
+		loaddata_mode=
+        <if  test="loaddata_mode == null">NULL</if>
+        <if  test="loaddata_mode != null">'${loaddata_mode}'</if>
+		,loaddata_state=
+        <if  test="loaddata_state == null">NULL</if>
+        <if  test="loaddata_state != null">'${loaddata_state}'</if>
+        ,dict_sql=
+        <if  test="dict_sql == null">NULL</if>
+        <if  test="dict_sql != null">'${dict_sql}'</if>
+		 where dict_id=#{dict_id,jdbcType=INTEGER}
+	</update>
+
+    <!--  根据 dict_id 查询 func_dict表的信息  -->
+    <select id="getFuncDictInfoByDictId" parameterType="int" resultType="Map">
+        select dict_id,dict_name,dict_desc,dict_db,loaddata_mode,loaddata_state,dict_sql from func_dict where dict_id=#{dict_id,jdbcType=INTEGER}
+    </select>
+
+    <!-- 根据 dict_id 查询 func_dict_out 表的信息 -->
+    <select id="getFuncDictOutInfoByDicId" parameterType="int" resultType="Map">
+        select dict_id,out_id,out_name,datatype from func_dict_out where dict_id=#{dict_id,jdbcType=INTEGER}
+    </select>
+
+    <!-- 创建func_dict_value 信息 -->
+    <insert id="createFuncDictValue" parameterType="Map">
+       insert into func_dict_value(dict_id,value_code,value_name,abbr_name1,abbr_name2,value_pid,attribute1,attribute2,attribute3,attribute4,attribute5,
+attribute6,attribute7,attribute8)
+        values(#{dict_id,jdbcType=INTEGER},'${value_code}','${value_name}',
+        <if  test="abbr_name1 == null">NULL</if>
+        <if  test="abbr_name1 != null">'${abbr_name1}'</if>,
+        <if  test="abbr_name2 == null">NULL</if>
+        <if  test="abbr_name2 != null">'${abbr_name2}'</if>,
+        <if  test="value_pid == null || value_pid == ''">NULL</if>
+        <if  test="value_pid != null and value_pid != ''">#{value_pid,jdbcType=INTEGER}</if>,
+        <if  test="attribute1 == null">NULL</if>
+        <if  test="attribute1 != null">'${attribute1}'</if>,
+        <if  test="attribute2 == null">NULL</if>
+        <if  test="attribute2 != null">'${attribute2}'</if>,
+        <if  test="attribute3 == null">NULL</if>
+        <if  test="attribute3 != null">'${attribute3}'</if>,
+        <if  test="attribute4 == null">NULL</if>
+        <if  test="attribute4 != null">'${attribute4}'</if>,
+        <if  test="attribute5 == null">NULL</if>
+        <if  test="attribute5 != null">'${attribute5}'</if>,
+        <if  test="attribute6 == null">NULL</if>
+        <if  test="attribute6 != null">'${attribute6}'</if>,
+        <if  test="attribute7 == null">NULL</if>
+        <if  test="attribute7 != null">'${attribute7}'</if>,
+        <if  test="attribute8 == null">NULL</if>
+        <if  test="attribute8 != null">'${attribute8}'</if>
+        )
+    </insert>
+
+    <!-- 查找dict_id 对应的 dict_db  -->
+    <select id="getDictDbByDictId" parameterType="int" resultType="String">
+        select dict_db from func_dict where dict_id=#{dict_id,jdbcType=INTEGER}
+    </select>
+    <select id="getDictValueByDictID" parameterType="int" resultType="Map">
+        select * from  func_dict_value WHERE dict_id=#{dict_id,jdbcType=INTEGER}  and value_code='${value_code}'
+    </select>
+    <!--  修改funcDictValue的value_name值 -->
+    <update id="updateFuncDictValue" parameterType="Map">
+        update func_dict_value set value_name='${value_name}'
+        ,abbr_name1=
+        <if  test="abbr_name1 == null">NULL</if>
+        <if  test="abbr_name1 != null">'${abbr_name1}'</if>
+        ,abbr_name2=
+        <if  test="abbr_name2 == null">NULL</if>
+        <if  test="abbr_name2 != null">'${abbr_name2}'</if>
+          WHERE dict_id=#{dict_id,jdbcType=INTEGER}
+        and value_code='${value_code}'
+    </update>
+
+    <!--  删除funcDictValue的value_name值 -->
+    <delete id="deleteFuncDictValue" parameterType="Map">
+        delete from  func_dict_value WHERE dict_id=#{dict_id,jdbcType=INTEGER}
+        and value_code='${value_code}'
+    </delete>
+
+</mapper>

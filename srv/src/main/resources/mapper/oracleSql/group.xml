@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="group">
+	
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectGroup" resultType="map">
+		 select * from (select * from (
+            select to_char(rownum) as rn, u.* from sys_org u where 1=1 
+			<if test="code!=null and code!='' "> and u.code like '%${code}%' </if>
+			<if test="name!=null"> and u.name like '%${name}%' </if>
+			<if test="address!=null"> and u.address like '%${address}%' </if>
+			<if test="contacts!=null"> and u.contacts like '%${contacts}%' </if>
+			 order by u.code ) t where 1=1 and 
+			 <![CDATA[ t.rn >  ${currentPage}]]> and <![CDATA[ t.rn < ${itemsPerPage}]]>) u where u.rn>0
+	</select>
+		<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectAllCount" resultType="String">
+		 select count(*) from sys_org where 1=1 
+		    <if test="code!=null and code!='' "> and code like '%${code}%' </if>
+			<if test="address!=null and address!='' "> and address like '%${address}%' </if>
+			<if test="name!=null"> and name like '%${name}%' </if>
+			<if test="state!=null and state!='' "> and state=${state} </if>
+			 order by code 
+	</select>
+	<!-- 查询，resultType是结果类型，返回的list元素的转成该对象类型 -->
+	<select id="selectOneGroup" resultType="map">
+		select * from sys_org where uuid=#{uuid}
+	</select>
+	
+	<select id="selectOrgALl" resultType="map">
+		select org_pk_value,parent_pk_value,name from sys_org where state!=2 order by to_number(code) asc
+	</select>
+	
+	<!-- 新增，parameterType参数类型，可以是java基本对象，可以是对象，#{}表示取对应的参数 -->
+	<insert id="insertGroup" parameterType="map">
+		insert into sys_org(uuid,code, name, address,contacts) values(#{uuid,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{contacts,jdbcType=VARCHAR})
+	</insert>
+	
+ 	<!-- 修改 -->
+	 <update id="updateGroup" parameterType="map">
+	 	update sys_org set code=#{code,jdbcType=VARCHAR},name=#{name,jdbcType=VARCHAR},address=#{address,jdbcType=VARCHAR},contacts=#{state,jdbcType=VARCHAR} where uuid = #{uuid}
+	</update>  
+	
+	<!-- 删除 -->
+	<delete id="deleteGroup" parameterType="String">
+		delete from sys_org where uuid in(#{uuid})
+	</delete>
+	<!-- 删除 -->
+	<delete id="updateGroupState" parameterType="String">
+		update sys_org set state=#{state} where uuid in(#{uuid})
+	</delete>
+</mapper>

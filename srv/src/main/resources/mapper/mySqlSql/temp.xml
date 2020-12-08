@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="temp">
+
+    <!-- 让此SQL能返回自增长主键 -->
+    <insert id="createTemp" parameterType="Map"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO temp(name,vist_date,id_number,contact,corp,workplace,temp)
+        VALUES ('${name}', '${vist_date}','${id_number}','${contact}','${corp}','${workplace}','${temp}')
+    </insert>
+
+
+    <!--查我函数名称-->
+    <select id="getAllTemp" parameterType="Map" resultType="Map">
+          SELECT
+            name,
+            vist_date,
+            id_number,
+            contact,
+            corp,
+            workplace,
+            temp
+          FROM
+            temp
+    </select>
+
+
+
+</mapper>

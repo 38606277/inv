@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="index">
+
+
+
+    <select id="getIndexValue" parameterType="Map" resultType="Map">
+		SELECT
+			bi.id,
+			bi.index_catalog_id,
+			bi.index_code,
+			bi.index_name,
+			bi.unit,
+			bi.`year`,
+			bi.`month`,
+			bi.provice,
+			bi.amount,
+			bi.`group`,
+			bi.corp,
+			bi.create_date,
+			bi.create_by,
+			bi.update_date,
+			bi.update_by,
+			bi.data_update_date
+		FROM
+			bd_index AS bi
+		WHERE
+			bi.index_catalog_id =${index_catalog_id}
+	</select>
+
+
+	<select id="getIndexValueWithColumn" parameterType="Map" resultType="Map">
+		SELECT
+			bi.index_name index_name,
+			max(bi.unit) unit,
+			sum( IF ( bi.YEAR = '2010', bi.amount, 0 ) ) AS '2010',
+			sum( IF ( bi.YEAR = '2011', bi.amount, 0 ) ) AS '2011',
+			sum( IF ( bi.YEAR = '2012', amount, 0 ) ) AS '2012',
+			sum( IF ( bi.YEAR = '2013', amount, 0 ) ) AS '2013',
+			sum( IF ( bi.YEAR = '2014', amount, 0 ) ) AS '2014',
+			sum( IF ( bi.YEAR = '2015', bi.amount, 0 ) ) AS '2015',
+			sum( IF ( bi.YEAR = '2016', bi.amount, 0 ) ) AS '2016',
+			sum( IF ( bi.YEAR = '2017', amount, 0 ) ) AS '2017',
+			sum( IF ( bi.YEAR = '2018', amount, 0 ) ) AS '2018',
+			sum( IF ( bi.YEAR = '2019', amount, 0 ) ) AS '2019'
+		FROM
+		   bd_index AS bi
+		WHERE
+		   bi.index_catalog_id =${index_catalog_id}
+		   --  AND bi.index_name = '水电发电量'
+		GROUP BY
+		   bi.index_name
+	</select>
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="function">
+
+    <!--查我函数名称-->
+    <select id="getAllFunctionName" parameterType="Map" resultType="Map">
+        SELECT
+            fn.func_id ,
+            fn.func_name ,
+            fn.func_desc ,
+            fc.class_id,
+            fc.class_name ,
+            func_type ,
+            func_db,
+            func_sql
+        FROM
+            func_name fn ,
+            func_class fc
+        WHERE
+            fc.class_id = fn.class_id
+
+    </select>
+	<!--查我函数名称-->
+	<select id="getNameByID" parameterType="Map" resultType="Map">
+		SELECT
+			fn.func_id ,
+			fn.func_name ,
+			fn.func_desc ,
+		    fc.class_id,
+			fc.class_name ,
+			func_type ,
+			func_db,
+		    func_sql
+		FROM
+			func_name fn ,
+			func_class fc
+		WHERE
+			fc.class_id = fn.class_id
+		and fn.func_id = ${func_id}
+
+	</select>
+	<!--查我函数名称-->
+	<select id="getFuncIdByName" parameterType="String" resultType="String">
+		SELECT
+			fn.func_id
+		FROM
+			func_name fn
+		WHERE
+			func_name = '${_parameter}'
+	</select>
+	<!--查我函数名称-->
+	<select id="getFuncNameById" parameterType="int" resultType="String">
+		SELECT
+			fn.func_name
+		FROM
+			func_name fn
+		WHERE
+			func_id = #{_parameter}
+	</select>
+	<!-- 根据class_id 查询func_name 当中的信息  -->
+	<select id="getFuncNameInfoByClassID" parameterType="int" resultType="Map">
+		SELECT
+			fn.func_id ,
+			fn.func_name ,
+			fn.func_desc ,
+		    fc.class_id,
+			fc.class_name ,
+			func_type ,
+			func_db,
+		    func_sql
+		FROM
+			func_name fn ,
+			func_class fc
+		WHERE
+		    fn.class_id = #{class_id,jdbcType=INTEGER}
+		and fc.class_id = fn.class_id
+	</select>
+	<!--查我函数名称-->
+	<select id="getInByID" parameterType="Map" resultType="Map">
+		SELECT
+			fi.func_id ,
+			fi.in_id ,
+			fi.in_name ,
+			fi.datatype ,
+			fi.dict_id ,
+			fd.dict_name ,
+			fi.validate ,
+			IF(fi.isformula, 1, 0) isformula,
+			fi.authtype_id ,
+			fat.authtype_desc
+		FROM
+			func_in fi
+			LEFT JOIN func_dict fd ON fi.dict_id = fd.dict_id
+			LEFT JOIN fnd_authtype fat ON fi.authtype_id = fat.authtype_id
+		WHERE
+			fi.func_id =  ${func_id}
+
+
+	</select>
+	<!--查我函数名称-->
+	<select id="getInByName" parameterType="Map" resultType="Map">
+		SELECT
+		fi.func_id ,
+		fi.in_id ,
+		fi.in_name ,
+		fi.datatype ,
+		fi.dict_id ,
+		fd.dict_name ,
+		fi.validate ,
+		IF(fi.isformula , 1 , 0) isformula ,
+		fi.authtype_id ,
+		fat.authtype_desc
+		FROM
+		func_in fi
+		JOIN func_name  fn on  fn.func_id=fi.func_id
+		LEFT JOIN func_dict fd ON fi.dict_id = fd.dict_id
+		LEFT JOIN fnd_authtype fat ON fi.authtype_id = fat.authtype_id
+		WHERE
+		fn.func_name = #{func_name}
+
+	</select>
+
+	<!--查我函数名称-->
+	<select id="getOutByID" parameterType="Map" resultType="Map">
+		SELECT
+			fo.func_id ,
+			fo.out_id ,
+			fo.out_name ,
+		    fo.datatype,
+			fo.link
+		FROM
+			func_out fo
+		WHERE
+			fo.func_id =${func_id}
+
+	</select>
+
+	<select id="getOutByMap" parameterType="Map" resultType="Map">
+		SELECT
+			fo.func_id ,
+			fo.out_id ,
+			fo.out_name ,
+		    fo.datatype,
+			fo.link
+		FROM
+			func_out fo
+		WHERE
+			fo.func_id =${func_id} and fo.out_id='${out_id}'
+	</select>
+
+	<!--查我函数名称-->
+	<select id="getFunctionName" parameterType="Map" resultType="Map">
+
+		SELECT fn.func_id,fn.func_class,fn.func_name,
+		fn.func_desc,fn.func_type,fn.func_file,
+		fn.func_url
+		FROM func_name fn
+		WHERE fn.func_name LIKE '%${name}%'
+
+	</select>
+
+	<!--查我函数名称-->
+	<select id="getFunctionClassByName" parameterType="Map" resultType="Map">
+
+		SELECT class_id,class_name
+		FROM func_class
+		WHERE class_name LIKE '%${name}%'
+
+	</select>
+
+	<!-- 让此SQL能返回自增长主键 -->
+	<insert id="createFunctionName" parameterType="Map"  useGeneratedKeys="true" keyProperty="id">
+
+		INSERT INTO func_name(class_id,func_name,func_desc,func_type,func_db,func_sql)
+		VALUES ('${class_id}', '${func_name}',
+		<if  test="func_desc == null">NULL</if>
+		<if  test="func_desc != null">'${func_desc}'</if>
+		,
+		<if  test="func_type == null">NULL</if>
+		<if  test="func_type != null">'${func_type}'</if>
+		,
+		<if  test="func_db == null">NULL</if>
+		<if  test="func_db != null">'${func_db}'</if>
+		,
+		<if  test="func_sql == null">NULL</if>
+		<if  test="func_sql != null">'${func_sql}'</if>
+		)
+    </insert>
+
+	<update id="updateFunctionName" parameterType="Map" >
+
+		update func_name set
+			class_id='${class_id}',func_name=
+			<if  test="func_name == null">NULL</if>
+			<if  test="func_name != null">'${func_name}'</if>
+			,func_desc=
+			<if  test="func_desc == null">NULL</if>
+			<if  test="func_desc != null">'${func_desc}'</if>
+			,func_type=
+			<if  test="func_type == null">NULL</if>
+			<if  test="func_type != null">'${func_type}'</if>
+			,func_db=
+			<if  test="func_db == null">NULL</if>
+			<if  test="func_db != null">'${func_db}'</if>
+			,func_sql=
+			<if  test="func_sql == null">NULL</if>
+			<if  test="func_sql != null">'${func_sql}'</if>
+		where func_id=#{func_id,jdbcType=INTEGER}
+	</update>
+
+    <!--删除函数名称-->
+    <delete id="deleteFunctionName" parameterType="int">
+
+		delete from  func_name
+		where func_id=#{func_id,jdbcType=INTEGER}
+
+    </delete>
+
+    <!--插入数据到函数输入参数表-->
+    <insert id="createFunctionIn" parameterType="Map">
+		INSERT INTO func_in
+		(func_id,in_id,in_name,datatype,dict_id,validate,default_value,isformula,authtype_id)
+		VALUES (
+		<if  test="func_id != null">#{func_id,jdbcType=INTEGER}</if>,
+		'${in_id}', '${in_name}', '${datatype}',
+		<if  test="dict_id == null or dict_id == ''">NULL</if>
+		<if  test="dict_id != null and dict_id != ''">#{dict_id,jdbcType=INTEGER}</if>
+		,
+		<if  test="validate == null">NULL</if>
+		<if  test="validate != null">'${validate}'</if>
+		,
+		<if  test="default_value == null">NULL</if>
+		<if  test="default_value != null">'${default_value}'</if>
+		,'${isformula}',
+		<if  test="authtype_id == null">NULL</if>
+		<if  test="authtype_id != null">'${authtype_id}'</if>
+		)
+    </insert>
+
+    <!--删除函数输入参数表数据-->
+    <delete id="deleteFunctionIn" parameterType="Map">
+		delete from func_in where func_id=#{func_id,jdbcType=INTEGER} and in_id='${in_id}'
+    </delete>
+
+    <!--删除函数输入参数表数据-->
+    <delete id="deleteFunctionInByFuncId" parameterType="int">
+		delete from func_in where func_id=#{func_id,jdbcType=INTEGER}
+    </delete>
+
+    <!--查询函数输出参数表-->
+    <insert id="createFunctionOut" parameterType="Map">
+
+		INSERT INTO func_out
+		(func_id,out_id,out_name,datatype,link)
+		VALUES (
+		<if  test="func_id != null">#{func_id,jdbcType=INTEGER}</if>,
+		'${out_id}', '${out_name}',
+		<if  test="datatype == null">NULL</if>
+		<if  test="datatype != null">'${datatype}'</if>
+		,
+		<if  test="link == null">NULL</if>
+		<if  test="link != null">'${link}'</if>
+		)
+
+    </insert>
+
+	<!-- 修改 func_out表当中的link字段 -->
+	<update id="updateFuncOutForLink" parameterType="Map">
+		update func_out set link='${link}' where func_id=#{func_id,jdbcType=INTEGER} and out_id='${out_id}'
+	</update>
+
+    <!--查询函数输出参数表-->
+    <delete id="deleteFunctionOut" parameterType="Map">
+		delete from func_out where func_id=#{func_id,jdbcType=INTEGER} and out_id='${out_id}'
+    </delete>
+
+    <!--查询函数输出参数表-->
+    <delete id="deleteFunctionOutByFuncId" parameterType="int">
+		delete from func_out where func_id=#{func_id,jdbcType=INTEGER}
+    </delete>
+
+	<!--  根据 func_out_link的主键 删除掉 func_out_link 表关联的记录  -->
+	<delete id="deleteFunctionOutLinkByPrimary" parameterType="Map">
+		delete from func_out_link where func_id=#{func_id,jdbcType=INTEGER}
+		  and out_id='${out_id}' and link_qry_id=#{link_qry_id,jdbcType=INTEGER}
+		   and link_in_id='${link_in_id}'
+	</delete>
+
+	<delete id="deleteFunctionOutLinkByFuncId" parameterType="int">
+		delete from func_out_link where func_id=#{func_id,jdbcType=INTEGER}
+	</delete>
+
+	<!--查我函数类别-->
+	<select id="getAllFunctionClass" parameterType="Map" resultType="Map">
+		SELECT
+		 fc.class_id ,
+		 fc.class_name
+		FROM
+		  func_class fc
+
+	</select>
+
+	<insert id="createFunctionClass" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+		insert into func_class(class_name) values('${class_name}')
+	</insert>
+
+	<delete id="deleteFunctionClass"  parameterType="int">
+		delete from func_class where class_id=#{class_id}
+	</delete>
+
+	<update id="updateFunctionClass"  parameterType="Map">
+		update func_class set class_name='${class_name}' where class_id=#{class_id};
+	</update>
+
+    <select id="getFuncInfoRelationClass" parameterType="int" resultType="int">
+        select count(1) from func_name where class_id=#{class_id,jdbcType=INTEGER}
+    </select>
+
+	<insert id="createFuncOutLink" parameterType="Map">
+		insert into func_out_link(func_id,out_id,link_qry_id,link_in_id,link_in_id_value_type,link_in_id_value)
+ 		values (#{func_id,jdbcType=INTEGER},'${out_id}',#{link_qry_id,jdbcType=INTEGER},'${link_in_id}','${link_in_id_value_type}',
+ 		'${link_in_id_value}')
+	</insert>
+</mapper>

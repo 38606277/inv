@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 模块名 -->
+<mapper namespace="proc">
+	<select id="GetProcName" resultType="Map">
+		select  str.report_code report_code,
+				str.report_name report_name,
+				str.report_desc report_desc,
+				str.proc_name proc_name
+		from apps.stat_biz_report str
+
+	</select>
+
+	<select id="GetProcParam"  parameterType="Map" resultType="Map">
+		select sbrp.parameter_name parameter_name,
+                   sbrp.parameter_type parameter_type,
+                   sbrp.parameter_desc parameter_desc,
+                   sbrp.parameter_class parameter_class,
+                   sbr.report_name report_name,
+                   sbrp.sequence sequence,
+                   '' parameter_value,
+                   sbr.report_code
+              from apps.stat_biz_report sbr, apps.stat_biz_report_parameter sbrp
+             where sbrp.report_code = sbr.report_code
+               and sbr.report_code = #{report_code}
+             order by sequence
+
+	</select>
+
+
+
+
+
+</mapper>
