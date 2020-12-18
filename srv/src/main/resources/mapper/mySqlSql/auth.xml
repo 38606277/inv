@@ -87,12 +87,12 @@
     </delete>
     <!--获取菜单列表-->
     <select id="getMenuByUserId" resultType="Map" parameterType="Map">
-        select * from fnd_func f inner join (SELECT DISTINCT a.func_id from fnd_auth a
+        select f.*,f.func_icon as icon,f.func_url as path,f.func_name as name from fnd_func f inner join (SELECT DISTINCT a.func_id from fnd_auth a
         inner join (select u.role_id from fnd_user_role u where u.user_id=#{userId,jdbcType=INTEGER}) as b on a.role_id=b.role_id
         where a.auth_type='webFunc')as r on f.func_id=r.func_id where f.func_type='reactWeb' and f.func_pid=#{pid,jdbcType=INTEGER} order by f.order,f.func_id asc
     </select>
     <select id="getMenuAll" resultType="Map" parameterType="Map">
-         select f.* from fnd_func f inner join (SELECT DISTINCT a.func_id from fnd_auth a
+         select f.*,f.func_icon as icon,f.func_url as path,f.func_name as name from fnd_func f inner join (SELECT DISTINCT a.func_id from fnd_auth a
         where a.auth_type='webFunc')as r on f.func_id=r.func_id where f.func_type='reactWeb' and f.func_pid=#{pid,jdbcType=INTEGER} order by f.order,f.func_id asc
     </select>
     <select id="getCubeListInAuth" resultType="Map" parameterType="map">

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fnd_menu">
+
+    <select id="listMenu" resultType="Map" parameterType="Map">
+        select * from fnd_func f where 1=1
+        <if test="func_type != null and func_type!=''">   and  f.func_type = #{func_type} </if>
+        <if test="func_pid != null and func_pid!=''">   and f.func_pid = #{func_pid} </if>
+        <if test="func_desc != null and func_desc!=''">   and f.func_desc = #{func_desc} </if>
+        <if test="valid != null and valid!=''">   and f.valid = #{valid} </if>
+        ORDER BY `order`
+    </select>
+
+
+    <select id="getMenuInfo" resultType="Map" parameterType="Map">
+        select * from fnd_func f where 1=1
+        <if test="func_name != null and func_name!=''">   and  f.func_name = #{func_name} </if>
+        <if test="func_id != null and func_type!=''">   and  f.func_id = #{func_id} </if>
+        <if test="func_type != null and func_type!=''">   and  f.func_type = #{func_type} </if>
+        <if test="func_pid != null and func_pid!=''">   and f.func_pid = #{func_pid} </if>
+        <if test="valid != null and valid!=''">   and f.valid = #{valid} </if>
+        <if test="func_desc != null and func_desc!=''">   and f.func_desc = #{func_desc} </if>
+    </select>
+
+    <select id="getRootMenuList" resultType="Map" parameterType="Map">
+        select * from fnd_func f where func_pid = 0
+    </select>
+
+
+    <insert id="addMenu"  parameterType="Map">
+        INSERT INTO fnd_func ( func_type,func_pid, func_name, valid, func_desc, func_icon, func_url, `order` )
+        VALUES
+        ( #{func_type},#{func_pid},#{func_name},#{valid},#{func_desc},#{func_icon},#{func_url},#{order});
+    </insert>
+
+    <update id="updateMenuOrder"  parameterType="Map">
+        update fnd_func f set f.`order`=#{order} where f.func_id=#{func_id}
+    </update>
+
+    <update id="updateMenu"  parameterType="Map">
+        update fnd_func f
+        set f.func_id=#{func_id}
+        <if test="order != null and order!=''">  ,f.`order`=#{order}   </if>
+        <if test="func_name != null and func_name!=''"> , f.func_name=#{func_name}   </if>
+        <if test="func_type != null and func_type!=''">  , f.func_type=#{func_type}   </if>
+        <if test="valid != null and valid!=''">  , f.valid=#{valid}   </if>
+        <if test="func_pid != null and func_pid!=''">  ,f.func_pid=#{func_pid}   </if>
+        <if test="func_icon != null and func_icon!=''">, f.func_icon=#{func_icon}   </if>
+        <if test="func_url != null and func_url!=''">, f.func_url=#{func_url}   </if>
+        <if test="func_desc != null and func_desc!=''">, f.func_desc=#{func_desc}   </if>
+        where f.func_id=#{func_id}
+    </update>
+
+
+    <select id="getMenuLastOrder" resultType="Map" parameterType="Map">
+        select f.`order` from fnd_func f where 1=1 and f.func_pid = #{func_pid}
+        ORDER BY `order` desc LIMIT 0,1
+    </select>
+
+    <update id="resetMenuOrder" parameterType="Map">
+        UPDATE fnd_func f SET f.`order`=f.`order`-1 where f.`order`>#{order}
+    </update>
+
+    <delete id="deleteMenu" parameterType="Map">
+        delete from fnd_func where func_id=#{func_id} or func_pid=#{func_id}
+    </delete>
+</mapper>

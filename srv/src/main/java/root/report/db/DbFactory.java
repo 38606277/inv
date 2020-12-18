@@ -177,13 +177,16 @@ public class DbFactory {
 
     private static List<File> getFileList(String path, List<File> list){
         File[] fileList = new File(path).listFiles();
-        for(File file:fileList){
-            if(file.getName().endsWith(".xml")){
-                list.add(file);
-            }else if(file.isDirectory()){
-                getFileList(file.getAbsolutePath(),list);
+        if(fileList!=null){
+            for(File file:fileList){
+                if(file.getName().endsWith(".xml")){
+                    list.add(file);
+                }else if(file.isDirectory()){
+                    getFileList(file.getAbsolutePath(),list);
+                }
             }
         }
+
         return list;
     }
 

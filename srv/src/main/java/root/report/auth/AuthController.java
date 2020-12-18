@@ -519,6 +519,37 @@ public class AuthController extends RO {
         }
         return SuccessMsg("",dataList);
     }
+
+    //获取菜单 最新版
+    @RequestMapping(value="/getMenuLisToAntdPro",produces = "text/plain;charset=UTF-8")
+    public String getMenuLisToAntdPro(@RequestBody String pJson) throws UnsupportedEncodingException, SAXException, DocumentException {
+        JSONObject obj = JSONObject.parseObject(pJson);
+        Map m=new HashMap<>();
+        int userId=obj.getInteger("userId");
+        List<Map<String, Object>> dataList=null;
+        if(userId==1){
+            m.put("pid", 0);
+            dataList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAll", m);
+            for (int i = 0; i < dataList.size(); i++) {
+                m.put("pid", dataList.get(i).get("func_id"));
+                List<Map<String, Object>> subList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAll", m);
+                dataList.get(i).put("children", subList);
+            }
+
+        }else {
+            m.put("userId", userId);
+            m.put("pid", 0);
+            dataList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserId", m);
+            for (int i = 0; i < dataList.size(); i++) {
+                m.put("pid", dataList.get(i).get("func_id"));
+                List<Map<String, Object>> subList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserId", m);
+                dataList.get(i).put("children", subList);
+            }
+        }
+        return SuccessMsg("",dataList);
+    }
+
+
     //根据数据查询获取数据classId
     @RequestMapping(value="/getClassId",produces = "text/plain;charset=UTF-8")
     public String getClassId(@RequestBody String pJson)  {

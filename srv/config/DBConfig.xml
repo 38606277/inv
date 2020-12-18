@@ -29,62 +29,77 @@
 <!--      <maxPoolSize>50</maxPoolSize>-->
 <!--      <minPoolSize>3</minPoolSize>-->
 <!--   </DB>-->
+
+
   <DB>
       <name>form</name>
       <dbtype>Mysql</dbtype>
       <driver>com.mysql.cj.jdbc.Driver</driver>
-      <url>jdbc:mysql://127.0.0.1:3306/form</url>
+      <url>jdbc:mysql://39.106.42.243:3306/erp</url>
       <username>root</username>
       <password>v600KuCLNBc=</password>
       <maxPoolSize>50</maxPoolSize>
       <minPoolSize>3</minPoolSize>
    </DB>
-   <DB>
-      <name>bb</name>
-      <driver>com.mysql.cj.jdbc.Driver</driver>
-      <dbtype>Mysql</dbtype>
-      <url>jdbc:mysql://127.0.0.1:3306/bb</url>
-      <username>root</username>
-      <password>v600KuCLNBc=</password>
-      <maxPoolSize>50</maxPoolSize>
-      <minPoolSize>3</minPoolSize>
-   </DB>
-    <DB>
-        <name>hive</name>
-        <dbtype>hive</dbtype>
-        <driver>org.apache.hive.jdbc.HiveDriver</driver>
-        <url>jdbc:hive2://172.17.5.132:10000/default</url>
-        <username>root</username>
-        <password>dLf1GlaLvJQ=</password>
-        <maxPoolSize>50</maxPoolSize>
-        <minPoolSize>3</minPoolSize>
-    </DB>
+    <!--本地 -->
+<!--    <DB>-->
+<!--        <name>form</name>-->
+<!--        <dbtype>Mysql</dbtype>-->
+<!--        <driver>com.mysql.cj.jdbc.Driver</driver>-->
+<!--        <url>jdbc:mysql://127.0.0.1:3306/assetiot</url>-->
+<!--        <username>root</username>-->
+<!--        <password>v600KuCLNBc=</password>-->
+<!--        <maxPoolSize>50</maxPoolSize>-->
+<!--        <minPoolSize>3</minPoolSize>-->
+<!--    </DB>-->
+<!--    -->
 
-   <DB>
-      <name>hbase</name>
-      <dbtype>hbase</dbtype>
-      <driver>org.apache.phoenix.jdbc.PhoenixDriver</driver>
-      <url>jdbc:phoenix:172.17.5.132,172.17.5.133,172.17.5.166:2181</url>
-      <username>admin</username>
-      <password>nMHdQlZWoxY=</password>
-      <maxPoolSize>50</maxPoolSize>
-      <minPoolSize>3</minPoolSize>
-   </DB>
+<!--   <DB>-->
+<!--      <name>bb</name>-->
+<!--      <driver>com.mysql.cj.jdbc.Driver</driver>-->
+<!--      <dbtype>Mysql</dbtype>-->
+<!--      <url>jdbc:mysql://127.0.0.1:3306/bb</url>-->
+<!--      <username>root</username>-->
+<!--      <password>v600KuCLNBc=</password>-->
+<!--      <maxPoolSize>50</maxPoolSize>-->
+<!--      <minPoolSize>3</minPoolSize>-->
+<!--   </DB>-->
+<!--    <DB>-->
+<!--        <name>hive</name>-->
+<!--        <dbtype>hive</dbtype>-->
+<!--        <driver>org.apache.hive.jdbc.HiveDriver</driver>-->
+<!--        <url>jdbc:hive2://172.17.5.132:10000/default</url>-->
+<!--        <username>root</username>-->
+<!--        <password>dLf1GlaLvJQ=</password>-->
+<!--        <maxPoolSize>50</maxPoolSize>-->
+<!--        <minPoolSize>3</minPoolSize>-->
+<!--    </DB>-->
+
+<!--   <DB>-->
+<!--      <name>hbase</name>-->
+<!--      <dbtype>hbase</dbtype>-->
+<!--      <driver>org.apache.phoenix.jdbc.PhoenixDriver</driver>-->
+<!--      <url>jdbc:phoenix:172.17.5.132,172.17.5.133,172.17.5.166:2181</url>-->
+<!--      <username>admin</username>-->
+<!--      <password>nMHdQlZWoxY=</password>-->
+<!--      <maxPoolSize>50</maxPoolSize>-->
+<!--      <minPoolSize>3</minPoolSize>-->
+<!--   </DB>-->
 
 
-   <DB> 
-      <name>jlerp</name>  
-      <dbtype>Mysql</dbtype>  
-      <driver>com.mysql.cj.jdbc.Driver</driver>  
-      <!-- <url>jdbc:mysql://114.251.247.113:3306/report</url> -->  
-      <url>jdbc:mysql://127.0.0.1:3306/jlerp</url>  
-      <!-- <url>jdbc:mysql://10.19.110.170:3306/form</url> -->  
-      <!-- <url>jdbc:mysql://172.25.105.113:3306/form</url> -->  
-      <username>root</username>  
-      <password>v600KuCLNBc=</password>  
-      <maxPoolSize>50</maxPoolSize>  
-      <minPoolSize>3</minPoolSize> 
-   </DB>  
+<!--   <DB> -->
+<!--      <name>jlerp</name>  -->
+<!--      <dbtype>Mysql</dbtype>  -->
+<!--      <driver>com.mysql.cj.jdbc.Driver</driver>  -->
+<!--      &lt;!&ndash; <url>jdbc:mysql://114.251.247.113:3306/report</url> &ndash;&gt;  -->
+<!--      <url>jdbc:mysql://127.0.0.1:3306/jlerp</url>  -->
+<!--      &lt;!&ndash; <url>jdbc:mysql://10.19.110.170:3306/form</url> &ndash;&gt;  -->
+<!--      &lt;!&ndash; <url>jdbc:mysql://172.25.105.113:3306/form</url> &ndash;&gt;  -->
+<!--      <username>root</username>  -->
+<!--      <password>v600KuCLNBc=</password>  -->
+<!--      <maxPoolSize>50</maxPoolSize>  -->
+<!--      <minPoolSize>3</minPoolSize> -->
+<!--   </DB>  -->
    <!--<DB>-->  
    <!--<name>form</name>-->  
    <!--<dbtype>Mysql</dbtype>-->  
@@ -125,24 +140,24 @@
    <!--      <maxPoolSize>50</maxPoolSize>  -->  
    <!--      <minPoolSize>3</minPoolSize> -->  
    <!--   </DB> -->  
-   <DB> 
-      <name>saaa</name>  
-      <driver>com.mysql.cj.jdbc.Driver</driver>  
-      <dbtype>Mysql</dbtype>  
-      <url>jdbc:mysql://127.0.0.1:3306/jlerp</url>  
-      <username>root</username>  
-      <password>v600KuCLNBc=</password>  
-      <maxPoolSize>50</maxPoolSize>  
-      <minPoolSize>3</minPoolSize> 
-   </DB>  
-   <DB> 
-      <name>lee</name>  
-      <driver>com.mysql.cj.jdbc.Driver</driver>  
-      <dbtype>Mysql</dbtype>  
-      <url>jdbc:mysql://192.168.206.49:3306/aaljz</url>  
-      <username>appuser</username>  
-      <password>dLf1GlaLvJQ=</password>  
-      <maxPoolSize>50</maxPoolSize>  
-      <minPoolSize>3</minPoolSize> 
-   </DB> 
+<!--   <DB> -->
+<!--      <name>saaa</name>  -->
+<!--      <driver>com.mysql.cj.jdbc.Driver</driver>  -->
+<!--      <dbtype>Mysql</dbtype>  -->
+<!--      <url>jdbc:mysql://127.0.0.1:3306/jlerp</url>  -->
+<!--      <username>root</username>  -->
+<!--      <password>v600KuCLNBc=</password>  -->
+<!--      <maxPoolSize>50</maxPoolSize>  -->
+<!--      <minPoolSize>3</minPoolSize> -->
+<!--   </DB>  -->
+<!--   <DB> -->
+<!--      <name>lee</name>  -->
+<!--      <driver>com.mysql.cj.jdbc.Driver</driver>  -->
+<!--      <dbtype>Mysql</dbtype>  -->
+<!--      <url>jdbc:mysql://192.168.206.49:3306/aaljz</url>  -->
+<!--      <username>appuser</username>  -->
+<!--      <password>dLf1GlaLvJQ=</password>  -->
+<!--      <maxPoolSize>50</maxPoolSize>  -->
+<!--      <minPoolSize>3</minPoolSize> -->
+<!--   </DB> -->
 </DBConnection>
