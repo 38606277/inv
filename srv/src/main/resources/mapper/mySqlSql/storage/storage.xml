@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="storage">
+
+
+    <insert id="addStorage"  useGeneratedKeys="true" keyProperty="id" parameterType="Map">
+        insert into storage
+        (num,name,time,type,department,address,area,contacts_name,contacts_tel)
+        values
+        (#{num}, #{name}, #{time},#{type},#{department}, #{address}, #{area},#{contacts_name},#{contacts_tel})
+    </insert>
+
+    <delete id="deleteStorage" parameterType="map">
+        delete from storage where id in (${ids})
+    </delete>
+
+
+    <update id="updateStorage" parameterType="Map">
+        update storage set
+        num=#{num},
+        name=#{name},
+        type=#{type},
+        department=#{department},
+        address=#{address},
+        area=#{area},
+        contacts_name=#{contacts_name},
+        contacts_tel=#{contacts_tel}
+        where id=#{id}
+    </update>
+
+    <select id="countStorageByPage" resultType="int" parameterType="Map">
+        SELECT count(1) FROM `storage` s
+        where 1=1
+        <if test="num != null and num!=''">  and s.num like '%${num}%' </if>
+        <if test="name != null and name!=''">  and s.name like '%${name}%' </if>
+        <if test="lease_begin_date != null and lease_begin_date != '' ">
+            and s.lease_time <![CDATA[>=]]> #{lease_begin_date}
+        </if>
+        <if test="lease_end_date != null and lease_end_date != '' ">
+            and s.lease_time <![CDATA[<=]]> #{lease_end_date}
+        </if>
+
+        <if test="type != null and type!=''">  and s.type like '%${type}%' </if>
+        <if test="department != null and department!=''">  and s.department like '%${department}%' </if>
+        <if test="is_default != null and is_default!=''">  and s.is_default = {is_default} </if>
+        <if test="is_disable != null and is_disable!=''">  and s.is_disable = {is_disable} </if>
+        <if test="address != null and address!=''">  and s.address like '%${address}%' </if>
+        <if test="area != null and area!=''">  and s.area like '%${area}%' </if>
+        <if test="contacts_name != null and contacts_name!=''">  and s.contacts_name like '%${contacts_name}%' </if>
+        <if test="contacts_tel != null and contacts_tel!=''">  and s.contacts_tel like '%${contacts_tel}%' </if>
+
+        <if test="create_begin_date != null and create_begin_date != '' ">
+            and s.create_time <![CDATA[>=]]> #{create_begin_date}
+        </if>
+        <if test="create_end_date != null and create_end_date != '' ">
+            and s.create_time <![CDATA[<=]]> #{create_end_date}
+        </if>
+        ORDER BY s.create_time desc
+    </select>
+
+
+    <select id="listStorageByPage" resultType="Map" parameterType="Map">
+        SELECT s.*,bd.`label` as type_name FROM `storage` s
+        LEFT JOIN base_data bd on  bd.type ='storage_type' and bd.`value` = s.type
+        where 1=1
+        <if test="num != null and num!=''">  and s.num like '%${num}%' </if>
+        <if test="name != null and name!=''">  and s.name like '%${name}%' </if>
+        <if test="lease_begin_date != null and lease_begin_date != '' ">
+            and s.lease_time &gt;= #{lease_begin_date}
+        </if>
+        <if test="lease_end_date != null and lease_end_date != '' ">
+            and s.lease_time &lt;= #{lease_end_date}
+        </if>
+
+        <if test="type != null and type !=''">  and s.type = #{type} </if>
+        <if test="department != null and department!=''">  and s.department like '%${department}%' </if>
+        <if test="is_default != null and is_default!=''">  and s.is_default = #{is_default} </if>
+        <if test="is_disable != null and is_disable!=''">  and s.is_disable = #{is_disable} </if>
+        <if test="address != null and address!=''">  and s.address like '%${address}%' </if>
+        <if test="area != null and area!=''">  and s.area like '%${area}%' </if>
+        <if test="contacts_name != null and contacts_name!=''">  and s.contacts_name like '%${contacts_name}%' </if>
+        <if test="contacts_tel != null and contacts_tel!=''">  and s.contacts_tel like '%${contacts_tel}%' </if>
+
+        <if test="create_begin_date != null and create_begin_date != '' ">
+            and s.create_time &gt;= #{create_begin_date}
+        </if>
+        <if test="create_end_date != null and create_end_date != '' ">
+            and s.create_time &lt;= #{create_end_date}
+        </if>
+
+        ORDER BY s.create_time desc
+        limit #{startIndex},#{perPage}
+    </select>
+
+</mapper>

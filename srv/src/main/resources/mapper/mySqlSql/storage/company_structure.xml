@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="company_structure">
+
+    <select id="getByCode" resultType="Map" parameterType="Map">
+        select *,name as title,code as value from company_structure where code=#{code}
+    </select>
+
+    <select id="getByParentCode" resultType="Map" parameterType="Map">
+        select *,name as title,code as value from company_structure where parent_code=#{parent_code}
+    </select>
+
+    <select id="getByPath" resultType="Map" parameterType="Map">
+        select *,name as title,code as value from company_structure where path like '${path}${code}-%'
+    </select>
+
+
+    <select id="getByKeyword" resultType="Map" parameterType="Map">
+        select *,name as title,code as value from company_structure ec
+        where 1=1
+        <if test="keyword != null and keyword!=''">  and (ec.code like '%${keyword}%' or ec.name like '%${keyword}%') </if>
+    </select>
+
+</mapper>

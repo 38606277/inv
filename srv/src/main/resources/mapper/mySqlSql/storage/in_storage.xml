@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="in_storage">
+
+
+
+    <select id="listInStorageByPage" resultType="Map" parameterType="Map">
+        SELECT
+        in_s.id,
+        in_s.order_num,
+        in_s.product_name,
+        in_s.product_num,
+        in_s.atr_num,
+        in_s.batch,
+        in_s.size,
+        in_s.color,
+        in_s.num,
+        in_s.in_num,
+        in_s.storage_location_id,
+        in_s.type,
+        in_s.create_user,
+        in_s.supplier,
+        in_s.in_storage_user_id,
+        in_s.create_time,
+        in_s.approval_user,
+        in_s.approval_time,
+        in_s.status,
+        a.USER_NAME AS approval_user_name,
+        b.USER_NAME AS create_user_name,
+        c.USER_NAME AS in_storage_user_name,
+        sl.`code` AS storage_location_code,
+        sl.`name` AS storage_location_name
+        FROM
+        in_storage in_s
+        LEFT JOIN fnd_user a ON in_s.approval_user = a._id
+        LEFT JOIN fnd_user b ON in_s.create_user = b._id
+        LEFT JOIN fnd_user c ON in_s.in_storage_user_id = c._id
+        LEFT JOIN storage_location sl ON in_s.storage_location_id = sl.id
+        where 1=1
+        <if test="order_num != null and order_num!=''">  and in_s.order_num like '%${order_num}%' </if>
+        <if test="product_name != null and product_name!=''">  and in_s.product_name like '%${product_name}%' </if>
+        <if test="product_num != null and product_num!=''">  and in_s.product_num like '%${product_num}%' </if>
+        <if test="atr_num != null and atr_num!=''">  and in_s.atr_num like '%${atr_num}%' </if>
+        <if test="batch != null and batch!=''">  and in_s.batch like '%${batch}%' </if>
+        <if test="size != null and size!=''">  and in_s.size like '%${size}%' </if>
+        <if test="color != null and color!=''">  and in_s.color like '%${color}%' </if>
+        <if test="num != null and num!=''">  and in_s.num like '%${num}%' </if>
+        <if test="in_num != null and in_num!=''">  and in_s.in_num like '%${in_num}%' </if>
+        <if test="type != null and type!=''">  and in_s.type like '%${type}%' </if>
+        <if test="storage_location_code != null and storage_location_code!=''">  and sl.`code` like '%${storage_location_code}%' </if>
+        <if test="storage_location_name != null and storage_location_name!=''">  and sl.`name` like '%${storage_location_name}%' </if>
+        <if test="create_user_name != null and create_user_name!=''">  and b.USER_NAME like '%${create_user_name}%' </if>
+        <if test="supplier != null and supplier!=''">  and in_s.supplier like '%${supplier}%' </if>
+        <if test="in_storage_user_name != null and in_storage_user_name!=''">  and c.USER_NAME like '%${in_storage_user_name}%' </if>
+        <if test="approval_user_name != null and approval_user_name!=''">  and a.USER_NAME like '%${approval_user_name}%' </if>
+        ORDER BY in_s.create_time
+        limit #{startIndex},#{perPage}
+    </select>
+
+</mapper>
