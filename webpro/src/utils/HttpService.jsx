@@ -1,15 +1,19 @@
 import { request } from 'umi';
+
 import LocalStorge from './LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 class BreakSignal { }
+
 export default class HttpService {
 
 
-
     static getBaseUrl() {
-        //let url = window.getServerUrl();//"http://localhost:8080/";
-        let url = '/api'
-        return url;
+
+        if (process.env.NODE_ENV === 'development') {
+            return '/api';
+        } else {
+            return window.getServerUrl();
+        }
     }
 
     static isLogin(url) {
@@ -18,7 +22,7 @@ export default class HttpService {
 
     static post(url, params) {
         if (this.isLogin(url)) {
-            window.location.href = '/user/login';
+            window.location.href = '#/user/login';
             return new Promise((resolve, reject) => { });
         } else {
             const fullUrl = HttpService.getBaseUrl() + (url.substring(0, 1) == '/' ? '' : '/') + url;

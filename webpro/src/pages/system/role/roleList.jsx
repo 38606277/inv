@@ -138,7 +138,7 @@ class RoleList extends React.Component {
                         />
                 </Tooltip>
                 <Tooltip>
-                    <Button href="/role/roleInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建角色</Button>
+                    <Button href="#/role/roleInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建角色</Button>
                 </Tooltip> */}
                     <Row>
                         <Col xs={24} sm={12}>
@@ -150,7 +150,7 @@ class RoleList extends React.Component {
                             />
                         </Col>
                         <Col xs={24} sm={12}>
-                            <Button href="/role/roleInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建角色</Button>
+                            <Button href="#/role/roleInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建角色</Button>
 
                         </Col>
                     </Row>

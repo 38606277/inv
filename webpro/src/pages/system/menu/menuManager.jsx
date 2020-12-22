@@ -444,7 +444,7 @@ export default class MenuManager extends React.Component {
 
       <div id="page-wrapper">
         <Card title="组织架构">
-          <Button type="primary" style={{ marginLeft: '10px' }} href="/menu/menuEdit/create/0" >新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} href="#/menu/menuEdit/create/0" >新增</Button>
           <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onSaveMenuClick()}>保存</Button>
           <DraggableTabs
             onTabsDataChanage={(oldIndex, newIndex) => { this.onTabsDataChanage(oldIndex, newIndex) }}

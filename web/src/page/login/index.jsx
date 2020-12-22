@@ -7,7 +7,7 @@
 import React from 'react';
 import User from '../../service/user-service.jsx'
 import LocalStorge from '../../util/LogcalStorge.jsx';
- import './index.css';
+import './index.css';
 
 const localStorge = new LocalStorge();
 const _user = new User();
@@ -78,28 +78,28 @@ class Login extends React.Component {
         return (
 
             <div class="log_main">
-                <h1 class="title" style={{color:"#666"}}><br/></h1>
-                <div class="rygl_up" style={{float:"right",marginRight:"180px"}}>
+                <h1 class="title" style={{ color: "#666" }}><br /></h1>
+                <div class="rygl_up" style={{ float: "right", marginRight: "180px" }}>
 
                     <div id="content" >
 
 
                         <div class="denglu">
                             <input name="UserCode" type="text" placeholder="请输入用户名" class="denglu_num"
-                              onKeyUp={e => this.onInputKeyUp(e)}
-                              onChange={e => this.onInputChange(e)} 
+                                onKeyUp={e => this.onInputKeyUp(e)}
+                                onChange={e => this.onInputChange(e)}
                             />
-                            <input name="Pwd"type="password"  placeholder="请输入密码" class="denglu_psd"
-                             onKeyUp={e => this.onInputKeyUp(e)}
-                             onChange={e => this.onInputChange(e)}
+                            <input name="Pwd" type="password" placeholder="请输入密码" class="denglu_psd"
+                                onKeyUp={e => this.onInputKeyUp(e)}
+                                onChange={e => this.onInputChange(e)}
                             />
                             <div class="denglu_zidong">
                                 <input name="" type="checkbox" value="" checked="checked" class="fuxuan" />
                                 <span>下次自动登录</span>
-                                <span style={{float:'right'}}>忘记密码?</span>
+                                <span style={{ float: 'right' }}>忘记密码?</span>
                             </div>
-                            <a href="#"><input name="" type="button" value="登录" class="denglu_btn" 
-                               onClick={e => { this.onSubmit(e) }}/></a>
+                            <a href="#"><input name="" type="button" value="登录" class="denglu_btn"
+                                onClick={e => { this.onSubmit(e) }} /></a>
                         </div>
 
                     </div>
@@ -107,7 +107,7 @@ class Login extends React.Component {
             </div>
 
 
-          
+
         );
     }
 }

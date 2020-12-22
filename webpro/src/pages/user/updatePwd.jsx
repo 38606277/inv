@@ -153,7 +153,7 @@ class UpdatePwd extends React.Component {
 
             <FormItem {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit">保存</Button>
-              <Button href="/" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
+              <Button href="#/" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
             </FormItem>
           </Form>
         </Card>

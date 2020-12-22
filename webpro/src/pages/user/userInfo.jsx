@@ -312,7 +312,7 @@ class UserInfo extends React.Component {
             </Row>
             <FormItem {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit">保存</Button>
-              <Button href="/user/userList" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
+              <Button href="#/user/userList" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
             </FormItem>
           </Form>
         </Card>

@@ -138,7 +138,7 @@ class UserList extends React.Component {
                         />
                 </Tooltip>
                 <Tooltip>
-                    <Button href="/user/userInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建用户</Button>
+                    <Button href="#/user/userInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建用户</Button>
                 </Tooltip> */}
                     <Row>
                         <Col xs={24} sm={12}>
@@ -150,7 +150,7 @@ class UserList extends React.Component {
                             />
                         </Col>
                         <Col xs={24} sm={12}>
-                            <Button href="/user/userInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建用户</Button>
+                            <Button href="#/user/userInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建用户</Button>
 
                         </Col>
                     </Row>

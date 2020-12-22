@@ -215,7 +215,7 @@ class AuthTypeInfo extends React.Component {
             </Row>
             <FormItem {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit" style={{ marginLeft: '30px' }}>保存</Button>
-              <Button href="/authType" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
+              <Button href="#/authType" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
             </FormItem>
           </Form>
         </Card>

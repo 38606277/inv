@@ -72,7 +72,7 @@ class DbsList extends React.Component {
         return (
             <div id="page-wrapper">
                 <Card title="创建数据源">
-                    <Button href="/dbs/dbInfo/null" type="primary" icon={<DatabaseOutlined />}>新建数据源</Button>
+                    <Button href="#/dbs/dbInfo/null" type="primary" icon={<DatabaseOutlined />}>新建数据源</Button>
                     <Input.Search
                         style={{ maxWidth: 300, marginBottom: '10px', float: "right" }}
                         placeholder="请输入..."

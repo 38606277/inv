@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Tag, message } from 'antd';
 import { groupBy } from 'lodash';
-import moment from 'moment';
+
 import { useModel } from 'umi';
-import { queryNotices } from '@/services/user';
 
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
@@ -21,7 +20,7 @@ const getNoticeData = (
     const newNotice = { ...notice };
 
     if (newNotice.datetime) {
-      newNotice.datetime = moment(notice.datetime as string).fromNow();
+      //newNotice.datetime = moment(notice.datetime as string).fromNow();
     }
 
     if (newNotice.id) {
@@ -82,7 +81,7 @@ const NoticeIconView = () => {
   const [notices, setNotices] = useState<API.NoticeIconData[]>([]);
 
   useEffect(() => {
-    queryNotices().then(({ data }) => setNotices(data));
+    // queryNotices().then(({ data }) => setNotices(data));
   }, []);
 
   const noticeData = getNoticeData(notices);

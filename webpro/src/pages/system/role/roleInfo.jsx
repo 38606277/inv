@@ -1,7 +1,6 @@
 import React from 'react';
 import Role from '@/services/RoleService.jsx'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
-import moment from 'moment';
 import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
 import { Input, Select, Button, DatePicker, Card, Row, Col } from 'antd';
@@ -141,7 +140,7 @@ class RoleInfo extends React.Component {
 
             <FormItem {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit">保存</Button>
-              <Button href="/role/roleList" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
+              <Button href="#/role/roleList" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
             </FormItem>
           </Form>
         </Card>

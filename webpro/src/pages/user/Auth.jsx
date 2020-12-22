@@ -108,7 +108,7 @@ class Auth extends React.Component {
                         enterButton="查询"
                         onSearch={value => this.onSearch(value)}
                     />
-                    <Button href="/user/userInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建用户</Button>
+                    <Button href="#/user/userInfo/null" style={{ float: "right", marginRight: "30px" }} type="primary">新建用户</Button>
                     <Row gutter={35}>
                         <Col span={8}>
                             <Table dataSource={dataSource} columns={columns} pagination={false} />

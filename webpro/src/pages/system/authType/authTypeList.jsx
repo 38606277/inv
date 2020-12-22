@@ -77,7 +77,7 @@ class AuthTypeList extends React.Component {
         return (
             <div id="page-wrapper">
                 <Card title="数据权限定义">
-                    <Button href="/authType/authTypeInfo/null" style={{ float: "right", marginRight: "30px", marginBottom: "10px" }} type="primary">新建权限类型</Button>
+                    <Button href="#/authType/authTypeInfo/null" style={{ float: "right", marginRight: "30px", marginBottom: "10px" }} type="primary">新建权限类型</Button>
                     <Table dataSource={dataSource} columns={columns} pagination={false} style={{ marginTop: '30px' }} />
                 </Card>
 

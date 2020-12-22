@@ -133,7 +133,7 @@ class UserView extends React.Component {
               <Col xs={24} sm={12}> </Col>
             </Row>
             <FormItem {...tailFormItemLayout}>
-              <Button href="/user/userList" type="primary">返回</Button>
+              <Button href="#/user/userList" type="primary">返回</Button>
             </FormItem>
           </Form>
         </Card>

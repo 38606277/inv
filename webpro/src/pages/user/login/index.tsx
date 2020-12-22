@@ -2,10 +2,10 @@ import {
   LockTwoTone,
   UserOutlined,
 } from '@ant-design/icons';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel, useRequest } from 'umi';
+import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
 import Footer from '@/components/Footer';
 import { fakeAccountLogin, LoginParams, encodePwd } from '@/services/login';
 
@@ -38,7 +38,7 @@ const goto = () => {
   setTimeout(() => {
     const { query } = history.location;
     const { redirect } = query as { redirect: string };
-    history.push(redirect || '/');
+    history.push({ pathname: redirect || '/' });
   }, 10);
 };
 
@@ -51,7 +51,14 @@ const Login: React.FC<{}> = () => {
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
+    if (typeof userInfo == 'undefined') {
+      return;
+    }
+
     const menuData = await initialState?.getMenuConfig?.();
+    if (typeof menuData == 'undefined') {
+      return;
+    }
     console.log('fetchUserInfo', userInfo)
     if (userInfo) {
       setInitialState({
@@ -118,7 +125,7 @@ const Login: React.FC<{}> = () => {
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src="/logo.svg" />
+              <img alt="logo" className={styles.logo} src={require('../../../../public/logo.svg')} />
               <span className={styles.title}>仓库管理系统</span>
             </Link>
           </div>
@@ -150,15 +157,11 @@ const Login: React.FC<{}> = () => {
               handleSubmit(values);
             }}
           >
-            <Tabs>
-              <Tabs.TabPane
-                key="account"
-                tab={intl.formatMessage({
-                  id: 'pages.login.accountLogin.tab',
-                  defaultMessage: '账户密码登录',
-                })}
-              />
-            </Tabs>
+            <div
+              style={{
+                marginBottom: 96,
+              }}
+            />
 
             {LOGINRESULT === 'InvalidUser' && (
               <LoginMessage

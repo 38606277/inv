@@ -23,6 +23,8 @@ const loginOut = async () => {
   const { redirect } = query;
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
+
+    localStorge.removeStorage('userInfo')
     history.replace({
       pathname: '/user/login',
       search: stringify({
@@ -51,7 +53,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       if (key == 'center') {
         let userId = localStorge.getStorage('userInfo').id;
         console.log('center', userId)
-        history.push(`/user/userInfo/${userId}`);
+        history.push({ pathname: `/user/userInfo/${userId}` });
       }
 
 

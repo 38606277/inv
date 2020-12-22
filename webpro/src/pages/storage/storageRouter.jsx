@@ -2,7 +2,7 @@ import React from 'react';
 import { HashRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 
 import Loadable from 'react-loadable';
-import loading from '../../util/loading.jsx'
+import loading from '@/utils/loading.jsx'
 
 const inStorageList = Loadable({
     loader: () => import(/* webpackChunkName: "inStorageList" */ './inStorage/inStorageList.jsx'),

@@ -71,41 +71,48 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     console.log('fetchUserInfo')
     try {
-      let loginRequestParams = {
-        UserCode: '',
-        Pwd: '',
-        import: "",
-        isAdmin: ""
-      }
-      let userInfo = localStorge.getStorage('userInfo');
-      loginRequestParams.UserCode = userInfo.userCode;
-      loginRequestParams.Pwd = userInfo.Pwd;
-      const LoginInfoResult = await fakeAccountLogin(loginRequestParams);
-      let loginInfo = LoginInfoResult.data;
-      // if (loginInfo) {
-      //   loginInfo.avatar = loginInfo.icon;
-      //   loginInfo.name = loginInfo.userCode;
-      //   loginInfo.title = '仓库管理系统';
-      //   loginInfo.userid = loginInfo.userId;
-      //   loginInfo.avatar = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
+      // let loginRequestParams = {
+      //   UserCode: '',
+      //   Pwd: '',
+      //   import: "",
+      //   isAdmin: ""
       // }
-      loginInfo.icon = 'https://himg.bdimg.com/sys/portraitn/item/e531646179b0a2b4f3cab96461644d29'
-      return loginInfo;
+      let userInfo = localStorge.getStorage('userInfo');
+      if (userInfo == '') {
+        return undefined;
+      } else {
+        return userInfo;
+      }
+
+      // loginRequestParams.UserCode = userInfo.userCode;
+      // loginRequestParams.Pwd = userInfo.Pwd;
+      // const LoginInfoResult = await fakeAccountLogin(loginRequestParams);
+      // let loginInfo = LoginInfoResult.data;  
+      //return loginInfo;
+
     } catch (error) {
-      history.push('/user/login');
+      history.push({
+        pathname: '/user/login',
+      });
     }
     return undefined;
   };
 
   //获取菜单配置
   const getMenuConfig = async () => {
+    console.log('getMenuConfig')
     try {
       let userInfo = localStorge.getStorage('userInfo');
+      if (userInfo == '') {
+        return [];
+      }
       const menuConfig = await queryMenu(userInfo.id);
       console.log('菜单数据：', menuConfig)
       return menuConfig.data;
     } catch (error) {
-      history.push('/user/login');
+      history.push({
+        pathname: '/user/login',
+      });
     }
     return undefined;
   };
@@ -164,9 +171,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
+
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== '/user/login') {
-        history.push('/user/login');
+        history.push({
+          pathname: '/user/login',
+        });
       }
     },
     menuDataRender: (menuData: MenuDataItem[]) => {

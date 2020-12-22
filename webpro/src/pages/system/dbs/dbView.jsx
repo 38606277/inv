@@ -108,7 +108,7 @@ class DbView extends React.Component {
             </Row>
 
             <FormItem {...tailFormItemLayout}>
-              <Button href="/dbs" type="primary">返回</Button>
+              <Button href="#/dbs" type="primary">返回</Button>
             </FormItem>
           </Form>
         </Card>

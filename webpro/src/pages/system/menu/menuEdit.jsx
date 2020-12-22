@@ -155,7 +155,7 @@ class menuEdit extends React.Component {
           extra={<span>
             <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)} disabled={this.state.isReadOnly}>保存并关闭</Button>
             <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)} disabled={this.state.isReadOnly}>保存</Button>
-            <Button href="/menu/menuManager" style={{ marginLeft: '10px' }}>返回</Button>
+            <Button href="#/menu/menuManager" style={{ marginLeft: '10px' }}>返回</Button>
           </span>} >
           <Form >
             <FormItem style={{ display: 'none' }}>

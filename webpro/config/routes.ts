@@ -1,45 +1,52 @@
 ﻿export default [
   {
+    name: 'loginTest',
+    layout: false,
+    path: '/user/loginTest',
+    component: './login',
+    exact: true
+  },
+  {
+    name: 'login',
+    layout: false,
+    path: '/user/login',
+    component: './user/login',
+    exact: true
+  },
+  {
     name: 'user',
     path: '/user',
     routes: [
       {
-        name: 'login',
-        layout: false,
-        path: '/user/login',
-        component: './user/login',
+        name: 'user.user-list',
+        path: '/user/userList',
+        component: './user/UserList',
         exact: true
       },
-      // {
-      //   name: 'user.user-list',
-      //   path: '/user/userList',
-      //   component: './user/UserList',
-      //   exact: true
-      // },
-      // {
-      //   name: 'user.user-list',
-      //   path: '/user/userInfo/:userId',
-      //   component: './user/UserInfo',
-      //   exact: true
-      // },
-      // {
-      //   name: 'user.user-list',
-      //   path: '/user/UpdatePwd/:userId',
-      //   component: './user/UpdatePwd',
-      //   exact: true
-      // },
-      // {
-      //   name: 'user.user-list',
-      //   path: '/user/userView/:userId',
-      //   component: './user/UserView',
-      //   exact: true
-      // },
-      // {
-      //   name: 'user.user-list',
-      //   path: '/user',
-      //   redirect: '/user/userList',
-      //   exact: true
-      // }
+      {
+        name: 'user.user-list',
+        path: '/user/userInfo/:userId',
+        component: './user/UserInfo',
+        exact: true
+      },
+      {
+        name: 'user.user-list',
+        path: '/user/UpdatePwd/:userId',
+        component: './user/UpdatePwd',
+        exact: true
+      },
+      {
+        name: 'user.user-list',
+        path: '/user/userView/:userId',
+        component: './user/UserView',
+        exact: true
+      },
+      {
+        name: 'user.user-list',
+        path: '/user',
+        redirect: '/user/userList',
+        exact: true
+      }
     ],
   },
   {
@@ -256,7 +263,7 @@
   },
   {
     path: '/',
-    redirect: '/user',
+    //redirect: '/user',
     exact: true
   },
   {
