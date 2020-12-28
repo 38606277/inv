@@ -81,6 +81,7 @@ export default defineConfig({
     // 'ant_compatible',
     // 'antd_pro',
     // 'antd',
+    //'rc_base',
     //'vendor',
     'umi',
   ],
@@ -89,144 +90,284 @@ export default defineConfig({
     config.merge({
       optimization: {
         splitChunks: {
-          // chunks: 'async',
-          // minSize: 30000,
-          // minChunks: 3,
-          // automaticNameDelimiter: '.',
-
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name(module) {
-                // get the name. E.g. node_modules/packageName/not/this/part.js
-                // or node_modules/packageName
-                const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-
-                // npm package names are URL-safe, but some servers don't like @ symbols
-                return `npm.${packageName.replace('@', '')}`;
-              },
-            }
-          },
+          chunks: 'async',
+          // chunks(chunk) {
+          //     // exclude `my-excluded-chunk`
+          //     return chunk.name !== 'my-excluded-chunk';
+          // },
+          minSize: 1024, //生成块的最小大小（以字节为单位）1024字节=1KB。
+          minChunks: 1,   //拆分前必须共享模块的最小块数。
+          maxInitialRequests: 30, //入口点的最大并行请求数。
 
           // cacheGroups: {
-
-          //   styles: {
-          //     name: 'styles',
-          //     test: /\.(css|less)$/,
-          //     chunks: 'async',
-          //     minChunks: 1,
-          //     minSize: 0,
-          //   },
-
-          //   //提取core-js
-          //   core_js: {
-          //     name: 'core_js',
-          //     test: /_core-js/,
-          //     priority: 11,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-          //   //提取rc控件
-          //   // rc: {
-          //   //   name: 'rc',
-          //   //   test: /_rc-/,
-          //   //   priority: 11,
-          //   //   chunks: 'async',
-          //   //   enforce: true,
-          //   // },
-          //   rc: {
-          //     name: 'rc',
-          //     test: /rc-select|rc-tree|rc-time-picker|rc-menu|rc-tabs|rc-table|rc-calendar|rc-trigger|rc-form/,
-          //     chunks: 'async',
-          //     priority: 13,
-          //     enforce: true,
-          //   },
-
-          //   //提取react
-          //   react_widget: {
-          //     name: 'react_widget',
-          //     test: /react-dnd/,
-          //     chunks: 'async',
-          //     priority: 11,
-          //     enforce: true,
-          //   },
-          //   //提取react
-          //   react: {
-          //     name: 'react',
-          //     test: /react|react-dom|react-router|react-router-dom|react-router-config/,
-          //     chunks: 'async',
-          //     priority: 11,
-          //     enforce: true,
-          //   },
-          //   //提取antd-design_compatible
-          //   ant_icon: {
-          //     name: 'ant_icon',
-          //     test: /ant-design_icons/,
-          //     priority: 11,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-          //   //提取antd-design_compatible
-          //   ant_compatible: {
-          //     name: 'ant_compatible',
-          //     test: /ant-design_compatible/,
-          //     priority: 11,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-          //   //提取antd_pro
-          //   antd_pro: {
-          //     name: 'antd_pro',
-          //     test: /pro-table|pro-filed|pro-form|pro-descriptions|pro-cil|pro-skelenton/,
-          //     priority: 11,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-
-          //   antd_login: {
-          //     name: 'antd_login',
-          //     test: /pro-utils|pro-provider|pro-layout/,
-          //     priority: 12,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-
-          //   antd_test: {
-          //     name: 'antd_test',
-          //     test: /antd\/es\/layout/,
-          //     priority: 12,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-
-
-          //   //提取antd es
-          //   antd_es: {
-          //     name: 'antd_es',
-          //     test: /antd\/es/,
-          //     priority: 10,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-
-          //   //提取antd lib
-          //   antd_lib: {
-          //     name: 'antd_lib',
-          //     test: /antd\/lib/,
-          //     priority: 10,
-          //     chunks: 'async',
-          //     enforce: true,
-          //   },
-
-          //   //剩余的都打包值vendor
           //   vendor: {
-          //     name: 'vendor',
           //     test: /[\\/]node_modules[\\/]/,
-          //     chunks: 'all',
-          //     priority: 9,
-          //     enforce: true,
+          //     name(module:any) {
+          //       // get the name. E.g. node_modules/packageName/not/this/part.js
+          //       // or node_modules/packageName
+          //       const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+
+          //       // npm package names are URL-safe, but some servers don't like @ symbols
+          //       return `npm.${packageName.replace('@', '')}`;
+          //     }
           //   }
           // },
+
+          cacheGroups: {
+            login_icon: {
+              name: 'login_icon',
+              test({ resource }: any) {
+                if (!resource) return false;
+                let test1 = /ant-design[\\/]icons-svg[\\/](es|lib)[\\/]asn[\\/](WarningFilled|ArrowRightOutlined|ArrowLeftOutlined|PlusOutlined|MenuFoldOutlined|MenuUnfoldOutlined)/.test(resource);
+                let test2 = /ant-design[\\/]icons[\\/](es|lib)[\\/]icons[\\/](WarningFilled|ArrowRightOutlined|ArrowLeftOutlined|PlusOutlined|MenuFoldOutlined|MenuUnfoldOutlined)/.test(resource);
+                let test3 = /ant-design[\\/]icons[\\/](es|lib)[\\/]components/.test(resource);
+                let test4 = /ant-design[\\/]icons[\\/](WarningFilled|ArrowRightOutlined|ArrowLeftOutlined|PlusOutlined|MenuFoldOutlined|MenuUnfoldOutlined)/.test(resource);
+                return test1 || test2 || test3 || test4;
+              },
+              priority: 19,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            login_antd_pro: {
+              name: 'login_antd_pro',
+              test: /pro-utils|pro-provider|pro-layout/,
+              priority: 19,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            login_lodash: {
+              name: 'login__lodash',
+              test: /_lodash.isequal/,
+              priority: 19,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            login_antd: {
+              name: 'login_antd',
+              test: /antd[\\/]es[\\/](tabs|result|breadcrumb|drawer|page-header|affix|_util[\\/](transButton|throttleByAnimationFrame))/,
+              priority: 19,
+              chunks: 'async',
+              enforce: true,
+            },
+
+
+            // styles: {
+            //   name: 'styles',
+            //   test: /\.(css|less)$/,
+            //   chunks: 'async',
+            //   minChunks: 1,
+            //   minSize: 0,
+            // },
+
+            //提取core-js
+            core_js_lib: {
+              name: 'core_js_lib',
+              test: /core-js[\\/]library/,
+              priority: 12,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            // core_js: {
+            //   name: 'core_js',
+            //   test: /_core-js/,
+            //   priority: 10,
+            //   chunks: 'all',
+            //   enforce: true,
+            // },
+
+            //剥离 rc aysnc模块
+            rc: {
+              test: /_rc/,
+              name(module: any) {
+                // get the name. E.g. node_modules/packageName/not/this/part.js
+                // or node_modules/packageName
+                const packageName = module.context.match(/_rc-[a-z]*/);
+                // npm package names are URL-safe, but some servers don't like @ symbols
+                //console.log('packageName', packageName)
+                return packageName;
+              },
+              priority: 12,
+              enforce: true,
+              chunks: 'async',
+            },
+
+            // rc_select: {
+            //   name(module: any) {
+            //     console.log('rc_select', module.resource);
+            //     return 'rc_select'
+            //   },
+            //   test: /rc-select/,
+            //   chunks: 'initial',
+            //   priority: 20,
+            //   enforce: true,
+            // },
+
+            // //提取react
+            // react_widget: {
+            //   name: 'react_widget',
+            //   test: /react-dnd/,
+            //   chunks: 'async',
+            //   priority: 11,
+            //   enforce: true,
+            // },
+
+            // //提取react
+            // react: {
+            //   name: 'react',
+            //   test: /react|react-dom|react-router|react-router-dom|react-router-config/,
+            //   chunks: 'async',
+            //   priority: 11,
+            //   enforce: true,
+            // },
+
+            //react 剥离
+            _react: {
+              name(module: any) {
+                // get the name. E.g. node_modules/packageName/not/this/part.js
+                // or node_modules/packageName
+                const packageName = module.context.match(/_react-([a-z]|-)*/);
+                // npm package names are URL-safe, but some servers don't like @ symbols
+                //console.log('packageName', packageName)
+                return packageName;
+              },
+              test: /_react-/,
+              chunks: 'async',
+              priority: 11,
+              enforce: true,
+            },
+
+
+            //提取ant_icon_svg
+            ant_icon_svg: {
+              name: 'ant_icon_svg',
+              //打包成单独文件 
+              // name(module:any) {
+              //   const packageName = module.resource.match(/[a-z|A-Z]*.js/);
+              //   if (!packageName) return 'ant_icon_svg';
+              //   return packageName;
+              // },
+              test: /ant-design_icons-svg/,
+              priority: 12,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            //提取ant_icon
+            ant_icon: {
+              name: 'ant_icon',
+              //打包成单独文件 
+              // name(module: any) {
+              //   const packageName = module.resource.match(/[a-z|A-Z]*.js/);
+              //   if (!packageName) return 'ant_icon';
+              //   return packageName;
+              // },
+              test: /ant-design_icons/,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            //提取antd_pro
+            antd_pro: {
+              name: 'antd_pro',
+              test: /pro-table|pro-field|pro-form|pro-descriptions|pro-cil|pro-skeleton/,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            //lodash.XXXX
+            lodashD: {
+              name: 'lodashD',
+              test: /_lodash./,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+            //lodash.@4.17.20
+            lodashAt: {
+              name: 'lodashAT',
+              test: /_lodash@/,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+
+
+            //提取antd-design_compatible
+            ant_compatible: {
+              name: 'ant_compatible',
+              test: /ant-design_compatible/,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            //提取antd es
+            antd_es: {
+              name: 'antd_es',
+              test: /antd[\\/]es/,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            //提取antd lib
+            antd_lib: {
+              name: 'antd_lib',
+              test: /antd[\\/]lib/,
+              priority: 11,
+              chunks: 'async',
+              enforce: true,
+            },
+
+            //剥离umijs
+            umijs: {
+              test: /umijs_/,
+              name(module: any) {
+                // get the name. E.g. node_modules/packageName/not/this/part.js
+                // or node_modules/packageName
+                const packageName = module.context.match(/umijs_([a-z]|-)*/);
+                // npm package names are URL-safe, but some servers don't like @ symbols
+                //console.log('packageName', packageName)
+                return packageName;
+              },
+              priority: 11,
+              enforce: true,
+              chunks: 'async',
+            },
+
+            //_babel-runtime
+            babel_runtime: {
+              name: 'babel_runtime',
+              test: /_babel-runtime/,
+              priority: 11,
+              enforce: true,
+              chunks: 'async',
+            },
+
+            hash_js: {
+              name: 'hash_js',
+              test: /_hash.js/,
+              priority: 11,
+              enforce: true,
+              chunks: 'async',
+            },
+
+
+            //剩余的都打包值vendor
+            vendor: {
+              name: 'vendor',
+              test: /[\\/]node_modules[\\/]/,
+              chunks: 'async',
+              priority: 9,
+              enforce: true,
+            }
+          },
         },
       }
     });
