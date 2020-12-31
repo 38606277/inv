@@ -69,7 +69,7 @@ class AuthTypeList extends React.Component {
             render: (text, record) => (
                 <span>
                     <Link to={`/authType/authTypeInfo/${record.value}`}>编辑</Link><Divider type="vertical" />
-                    <a onClick={() => this.deleteAuthType(`${record.value}`)} href="#!">删除</a>
+                    <a onClick={() => this.deleteAuthType(`${record.value}`)} >删除</a>
                 </span>
             ),
         }];

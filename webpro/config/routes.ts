@@ -233,6 +233,13 @@
   },
 
   {
+    name: 'user.user-list',
+    path: '/inv/org',
+    component: './inv/org/InvOrg',
+    exact: true
+  },
+
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'smile',
@@ -261,6 +268,7 @@
     component: './ListTableList',
     exact: true
   },
+
   {
     path: '/',
     //redirect: '/user',

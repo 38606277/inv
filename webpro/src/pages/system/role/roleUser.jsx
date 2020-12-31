@@ -149,7 +149,7 @@ class RoleUser extends React.Component {
             dataIndex: 'roleName',
             key: 'roleName',
             render: (text, record) => {
-                return <a href="#!" onClick={() => this.selectedOnchage(record.roleId, record.roleName)} >{record.roleName}</a>;
+                return <a onClick={() => this.selectedOnchage(record.roleId, record.roleName)} >{record.roleName}</a>;
             }
         }];
         const dataSourceUser = this.state.userList;

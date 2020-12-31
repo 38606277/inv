@@ -1,0 +1,10 @@
+/* 元素默认是隐藏的 */
+.element{
+    display:block;
+    float: right; 
+}
+
+/* 当鼠标经过兄弟元素brother-showing时，也就是经过父级father的时候。父级获得hover状态，在父级hover的基础上写element的样式： */
+.father:hover .element{
+    display:block ;
+}

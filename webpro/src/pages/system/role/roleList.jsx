@@ -117,7 +117,7 @@ class RoleList extends React.Component {
                 <span>
                     <Link to={`/role/roleInfo/${record.roleId}`}>编辑</Link>
                     <Divider type="vertical" />
-                    <a onClick={() => this.deleteRole(`${record.roleId}`)} href="#!">删除</a>
+                    <a onClick={() => this.deleteRole(`${record.roleId}`)} >删除</a>
                     <Divider type="vertical" />
                     <Link to={`/role/roleUser/${record.roleId}`}>分配用户</Link>
                     <Divider type="vertical" />

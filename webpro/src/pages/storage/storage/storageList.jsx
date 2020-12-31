@@ -6,8 +6,6 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 
 import CreateForm from './components/CreateForm.jsx';
 import UpdateForm from './components/UpdateForm.jsx';
-
-
 import HttpService from '@/utils/HttpService.jsx';
 
 const { confirm } = Modal;
@@ -75,7 +73,6 @@ const onDeleteClickListener = (ref, selectedRowKeys) => {
 
         },
     });
-
 }
 //删除
 const deleteByIds = (ref, selectedRowKeys) => {
