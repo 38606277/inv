@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/reportServer/org")
-public class OrgController extends RO {
+public class InvOrgController extends RO {
 
 	*/
 /**

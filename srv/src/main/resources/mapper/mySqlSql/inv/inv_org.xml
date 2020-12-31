@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatiio.org//DTD Mapper 3.0//EN"
+        "http://mybatiio.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inv_org">
+
+    <insert id="add"  parameterType="Map" keyColumn="org_id" keyProperty="org_id" useGeneratedKeys="true">
+        insert into inv_org(org_pid,org_name,org_type,address,contacts) values( #{org_pid}, #{org_name},#{org_type}, #{address}, #{contacts})
+    </insert>
+
+    <delete id="deleteByIds" parameterType="Map">
+        delete from inv_org where org_id = #{org_id} or path like "${path}%"
+    </delete>
+
+    <update id="updateById" parameterType="Map">
+        update inv_org
+        <trim prefix="set" suffixOverrides=",">
+            <if test="org_pid!=null">org_pid=#{org_pid},</if>
+            <if test="org_name!=null">org_name=#{org_name},</if>
+            <if test="org_type!=null">org_type=#{org_type},</if>
+            <if test="address!=null">address=#{address},</if>
+            <if test="contacts!=null">contacts=#{contacts},</if>
+            <if test="path!=null">path=#{path},</if>
+            <if test="level!=null">level=#{level},</if>
+        </trim>
+        where org_id=#{org_id}
+    </update>
+
+    <update id="updateByPid" parameterType="Map">
+        update inv_org
+        <trim prefix="set" suffixOverrides=",">
+            <if test="new_org_pid!=null">org_pid=#{new_org_pid},</if>
+            <if test="org_name!=null">name=#{org_name},</if>
+            <if test="address!=null">life=#{address},</if>
+            <if test="contacts!=null">unit=#{contacts},</if>
+            <if test="path!=null">path=#{path},</if>
+            <if test="org_type!=null">path=#{org_type},</if>
+        </trim>
+        where org_pid=#{org_pid}
+    </update>
+
+
+    <update id="updatePath" parameterType="Map">
+        update inv_org set path = replace(path,#{old_path},#{new_path});
+    </update>
+
+
+    <select id="getById" resultType="Map" parameterType="Map">
+        select *, org_id as `key` ,org_name as title  from inv_org where org_id=#{org_id}
+    </select>
+
+    <select id="getByPid" resultType="Map" parameterType="Map">
+        select *, org_id as `key` ,org_name as title  from inv_org where org_pid=#{org_pid}
+    </select>
+
+    <select id="getByPath" resultType="Map" parameterType="Map">
+        select *, org_id as `key` ,org_name as title from inv_org where path like '%${path}${org_id}-%'
+    </select>
+
+
+    <select id="getByKeyword" resultType="Map" parameterType="Map">
+        select io.*, io.org_id as `key` ,io.org_name as title from inv_org io
+        where 1=1
+        <if test="org_name != null and org_name!=''">  and io.org_name like '%${org_name}%' </if>
+        <if test="address != null and address!=''">  and io.address like '%${address}%' </if>
+        <if test="contacts != null and contacts!=''">  and io.contacts like '%${contacts}%' </if>
+        <if test="org_type != null and org_type!=''">  and io.org_type=#{org_type} </if>
+        <if test="contacts_tel != null and contacts_tel!=''">  and io.contacts_tel like '%${contacts_tel}%' </if>
+        <if test="path != null and path!=''">  and path like '${path}%' </if>
+    </select>
+
+</mapper>
